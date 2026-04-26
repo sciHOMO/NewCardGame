@@ -156,6 +156,8 @@ void ACardPlayer::SetInputMode(EInputMode NewMode)
 		}
 	case EInputMode::PickUpSacrifices :
 		{
+			MainUMG -> NotifyPickUpSacrifice(FocusActor -> CardStruct.CardLevel);
+			FocusActor -> SetCardState(EState::Hide);
 			break;
 		}
 	case EInputMode::PickUpTargets :

@@ -45,13 +45,13 @@ void ACardModel::SetCardState(EState NewState)
 	case EState::Anim :
 		{
 			SetActorHiddenInGame(false);
-			//SetActorEnableCollision(false);
+			SetActorEnableCollision(false);
 			break;
 		}
 	case EState::Lerp	:
 		{
 			SetActorHiddenInGame(false);
-			//SetActorEnableCollision(true);
+			SetActorEnableCollision(true);
 			AdditiveLocation = FVector::ZeroVector;
 			if (CardState == EState::Follow)
 			{
@@ -73,7 +73,11 @@ void ACardModel::SetCardState(EState NewState)
 		}
 	case EState::Focus :
 		{
-			if (CardStruct.CardZone == EZone::HandZone)
+			if (CardStruct.CardZone == EZone::HandZone && CardStruct.PlayerIndex == EventListener -> Controller -> PlayerState -> GetPlayerId())
+			{
+				AdditiveLocation = FVector(0.0F, 30.0f, 30.0F);
+			}
+			if (CardStruct.CardZone == EZone::EchoZone && CardStruct.PlayerIndex == EventListener -> Controller -> PlayerState -> GetPlayerId())
 			{
 				AdditiveLocation = FVector(0.0F, 30.0f, 30.0F);
 			}
@@ -86,7 +90,13 @@ void ACardModel::SetCardState(EState NewState)
 	case EState::Hide:
 		{
 			SetActorHiddenInGame(true);
-			//SetActorEnableCollision(false);
+			SetActorEnableCollision(false);
+			if (CardState == EState::Follow)
+			{
+				EventListener -> RemoveFromHandZone(this);
+				EventListener -> RefreshHandZone(CardStruct.PlayerIndex);
+				break;
+			}
 			break;
 		}
 	}

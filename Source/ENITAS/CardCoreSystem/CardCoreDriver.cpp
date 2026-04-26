@@ -533,6 +533,7 @@ void ACardCoreDriver::ReceiveEndTurn(const int PlayerIndex)
 	
 	SetGamePhase( PlayerIndex == 0 ? EPhase::Player_1_Turn : EPhase::Player_0_Turn);
 	
+	SolveStack();
 }
 
 void ACardCoreDriver::ReceivePlayCard(const int PlayerIndex, const int SourceCard, const int TargetCard, const TArray<int>& Sacrifice)	//基于后进先出的顺序，先生成本身的事件，再检测代价
@@ -552,6 +553,8 @@ void ACardCoreDriver::ReceivePlayCard(const int PlayerIndex, const int SourceCar
 	{
 		PayCostAsSacrifice(Idx, SourceCard);
 	}
+
+	SolveStack();
 }
 
 void ACardCoreDriver::ReceiveAttack(const int PlayerIndex, const int SourceCard, const int TargetCard)
@@ -559,6 +562,8 @@ void ACardCoreDriver::ReceiveAttack(const int PlayerIndex, const int SourceCard,
 	if (false) return;
 
 	CardAttack(GetCardInstanceByIndex(SourceCard), GetCardInstanceByIndex(TargetCard), EReason::PlaceHolder);
+
+	SolveStack();
 }
 
 void ACardCoreDriver::ReceiveActivate(const int PlayerIndex, const int SourceCard, const TArray<int>& Sacrifice)	//这些效果遵循后进先出。
@@ -587,6 +592,8 @@ void ACardCoreDriver::ReceiveActivate(const int PlayerIndex, const int SourceCar
 	{
 		PayCostAsSacrifice(Idx, SourceCard);
 	}
+
+	SolveStack();
 }
 
 void ACardCoreDriver::ReceiveTarget(const int PlayerIndex, const int PickedTarget)

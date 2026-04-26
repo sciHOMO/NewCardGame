@@ -20,4 +20,7 @@ public:
 
 	UFUNCTION(BlueprintNativeEvent)
 	void NotifyTurnStart(const int PlayerIndex);
+
+	UFUNCTION(BlueprintNativeEvent)
+	void NotifyPickUpSacrifice(const int Level);
 };

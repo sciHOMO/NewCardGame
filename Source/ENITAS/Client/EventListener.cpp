@@ -80,7 +80,10 @@ void UEventListener::Clear(int Index)
 void UEventListener::HandleGameStart(const FEventPackageStruct& Package)
 {
 	Cast<ACardPlayer>(Controller) -> MainUMG -> NotifyGameStart();
-	Clear(Package.GlobalEventIndex);
+	FTimerHandle TimerHandle;
+	FTimerDelegate TimerDelegate;
+	TimerDelegate.BindLambda([this, Index = Package.GlobalEventIndex](){this -> Clear(Index);});
+	GetWorld() -> GetTimerManager().SetTimer(TimerHandle, TimerDelegate, 1.0F, false);
 }
 
 void UEventListener::HandleGameEnd(const FEventPackageStruct& Package)
@@ -91,7 +94,10 @@ void UEventListener::HandleGameEnd(const FEventPackageStruct& Package)
 void UEventListener::HandleTurnStart(const FEventPackageStruct& Package)
 {
 	Cast<ACardPlayer>(Controller) -> MainUMG -> NotifyTurnStart(Package.Params[0].IntValue);
-	Clear(Package.GlobalEventIndex);
+	FTimerHandle TimerHandle;
+	FTimerDelegate TimerDelegate;
+	TimerDelegate.BindLambda([this, Index = Package.GlobalEventIndex](){this -> Clear(Index);});
+	GetWorld() -> GetTimerManager().SetTimer(TimerHandle, TimerDelegate, 1.0F, false);
 }
 
 void UEventListener::HandleTurnEnd(const FEventPackageStruct& Package)
