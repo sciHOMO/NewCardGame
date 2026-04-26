@@ -362,7 +362,7 @@ void UEventListener::RemoveFromEchoZone(ACardModel* CardModel)
 	}
 	else
 	{
-		EnemyHandZone.Remove(CardModel);
+		EnemyEchoZone.Remove(CardModel);
 	}
 }
 
