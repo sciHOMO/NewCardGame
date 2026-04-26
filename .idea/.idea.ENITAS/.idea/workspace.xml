@@ -10,17 +10,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c74a718f-9b99-4263-9cf9-fd0684de377e" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/Content/Arena.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Arena.umap" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Gameplay/BP_CardPlayer.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Gameplay/BP_CardPlayer.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Gameplay/BP_MainUMG.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ENITAS/CardCoreSystem/CardCoreDriver.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ENITAS/CardCoreSystem/CardCoreDriver.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ENITAS/Client/CardModel.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ENITAS/Client/CardModel.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ENITAS/Client/EventListener.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ENITAS/Client/EventListener.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ENITAS/Client/MainUMG.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ENITAS/Client/MainUMG.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ENITAS/Client/MainUMG.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ENITAS/Client/MainUMG.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ENITAS/GamePlay/CardPlayer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ENITAS/GamePlay/CardPlayer.cpp" afterDir="false" />
-    </list>
+    <list default="true" id="c74a718f-9b99-4263-9cf9-fd0684de377e" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -452,6 +442,7 @@
       <updated>1777190740077</updated>
       <workItem from="1777190741282" duration="584000" />
       <workItem from="1777191386424" duration="3325000" />
+      <workItem from="1777217935057" duration="310000" />
     </task>
     <servers />
   </component>
