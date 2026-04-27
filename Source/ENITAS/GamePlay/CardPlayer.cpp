@@ -198,7 +198,20 @@ void ACardPlayer::LeftMouseButtonClicked()
 		}
 	case EInputMode::PickUpSacrifices :
 		{
-			//添加对象并检测是否完成
+			if (CheckHitResult() && CheckHitResult() != FocusActor)
+			{
+				if (!SacrificeMap.Contains(CheckHitResult() -> CardStruct.CardID))
+				{
+					CheckHitResult() -> SetCardState(EState::Focus);
+					SacrificeMap.Emplace(CheckHitResult() -> CardStruct.CardID, CheckHitResult());
+				}
+				else
+				{
+					CheckHitResult() -> SetCardState(EState::Lerp);
+					SacrificeMap.Remove(CheckHitResult() -> CardStruct.CardID);
+				}
+				MainUMG -> NotifyPickUpCount(SacrificeMap.Num());
+			}
 			break;
 		}
 	case EInputMode::PickUpTargets :
@@ -259,6 +272,16 @@ void ACardPlayer::LeftMouseButtonReleased()
 		}
 	default : break;	
 	}
+}
+
+void ACardPlayer::CallBackPickUpSacrifice()
+{
+	TArray<int> Result;
+	SacrificeMap.GenerateKeyArray(Result);
+	SacrificeMap.Empty();
+	
+	RequestPlayCard(FocusActor -> CardStruct.CardIndex, INT_ERROR, Result);
+	SetInputMode(EInputMode::Idle);
 }
 
 ACardModel* ACardPlayer::CheckHitResult() const

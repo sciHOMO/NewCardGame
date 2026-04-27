@@ -14,3 +14,8 @@ void UMainUMG::NotifyPickUpSacrifice_Implementation(const int Level)
 {
 	
 }
+
+void UMainUMG::NotifyPickUpCount_Implementation(const int Num)
+{
+	
+}

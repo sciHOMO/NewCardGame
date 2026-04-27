@@ -10,7 +10,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c74a718f-9b99-4263-9cf9-fd0684de377e" name="Changes" comment="" />
+    <list default="true" id="c74a718f-9b99-4263-9cf9-fd0684de377e" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.ENITAS/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.ENITAS/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Arena1.umap" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Library/CardInfoLib.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Library/CardInfoLib.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/UMG/BP_MainUMG.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/UMG/BP_MainUMG.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ENITAS/Client/MainUMG.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ENITAS/Client/MainUMG.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ENITAS/Client/MainUMG.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ENITAS/Client/MainUMG.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ENITAS/GamePlay/CardPlayer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ENITAS/GamePlay/CardPlayer.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ENITAS/GamePlay/CardPlayer.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ENITAS/GamePlay/CardPlayer.h" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -442,7 +451,7 @@
       <updated>1777190740077</updated>
       <workItem from="1777190741282" duration="584000" />
       <workItem from="1777191386424" duration="3325000" />
-      <workItem from="1777217935057" duration="310000" />
+      <workItem from="1777217935057" duration="3166000" />
     </task>
     <servers />
   </component>

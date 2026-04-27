@@ -82,6 +82,9 @@ public:
 	ACardModel* SecondFocusActor = nullptr;
 
 	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly)
+	TMap<int, ACardModel*> SacrificeMap = {};
+
+	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly)
 	EInputMode InputMode = EInputMode::Idle;
 
 	UFUNCTION()
@@ -93,6 +96,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void LeftMouseButtonReleased();
 
+	UFUNCTION(BlueprintCallable)
+	void CallBackPickUpSacrifice();
+	
 	UFUNCTION()
 	ACardModel* CheckHitResult() const;
 

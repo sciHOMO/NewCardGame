@@ -23,4 +23,7 @@ public:
 
 	UFUNCTION(BlueprintNativeEvent)
 	void NotifyPickUpSacrifice(const int Level);
+
+	UFUNCTION(BlueprintNativeEvent)
+	void NotifyPickUpCount(const int Num);
 };
