@@ -121,6 +121,7 @@ void UEventListener::HandleCardMove(const FEventPackageStruct& Package)
 	{
 		CastSpell(Package); return;
 	}
+	
 }
 
 void UEventListener::HandleCardAttach(const FEventPackageStruct& Package)
@@ -158,7 +159,118 @@ void UEventListener::HandleCardReveal(const FEventPackageStruct& Package)
 
 	
 }
+
 //****************************本地效果管理*********************************
+void UEventListener::GetCardsByZone(EZone Zone, int PlayerIndex, TArray<ACardModel*>& OutCards) const
+{
+	OutCards.Empty();
+	for (ACardModel* Card : AllCardModels)
+	{
+		if (Card && Card->CardStruct.CardZone == Zone && Card->CardStruct.PlayerIndex == PlayerIndex)
+		{
+			OutCards.Add(Card);
+		}
+	}
+}
+
+void UEventListener::RefreshZone(EZone Zone, int PlayerIndex)
+{
+	TArray<ACardModel*> Cards;
+    GetCardsByZone(Zone, PlayerIndex, Cards);
+	const bool IsOwner = Controller->PlayerState->GetPlayerId() == PlayerIndex;
+	const int TCount = Cards.Num();
+
+    // 根据Zone类型应用不同的布局规则
+    switch(Zone)
+    {
+        case EZone::HandZone:
+        {
+            auto GetY = [](const int Count) -> float
+            {
+                if (Count <= 2) return 66.F;
+                if (Count >= 10) return 30.F;
+                return 66.F + (30.f - 66.F) * (Count - 2) / 8;
+            };
+
+            const float YSpacing = GetY(TCount);
+
+            for (int Idx = 0; Idx < TCount; ++Idx)
+            {
+                ACardModel* Card = Cards[Idx];
+                const float Y = IsOwner 
+                    ? (350.F - (TCount - 1) * 30.f + Idx * YSpacing)
+                    : (-350.F + (TCount - 1) * 30.f - Idx * YSpacing);
+                const float Z = 200.F + Idx * 5.0F;
+                const float X = IsOwner ? -400.F : 500.f;
+
+                Card -> TargetLocation = FVector(X, Y, Z);
+            }
+            break;
+        }
+        case EZone::BoardZone:
+        {
+            for (int Idx = 0; Idx < TCount; ++Idx)
+            {
+                ACardModel* Card = Cards[Idx];
+                const float Y = IsOwner 
+                    ? (-(TCount - 1) * 100.F + Idx * 200.F)
+                    : ((TCount - 1) * 100.F - Idx * 200.F);
+                const float X = IsOwner ? -120.F : 120.F;
+
+                Card -> TargetLocation = FVector(X, Y, 180.F);
+            }
+            break;
+        }
+        case EZone::EchoZone:
+        {
+            auto GetY = [](const int Count) -> float
+            {
+                if (Count <= 2) return 66.F;
+                if (Count >= 6) return 30.F;
+                return 66.F + (30.F - 66.F) * (Count - 2) / 4;
+            };
+
+            const float YSpacing = GetY(TCount);
+
+            for (int Idx = 0; Idx < TCount; ++Idx)
+            {
+                ACardModel* Card = Cards[Idx];
+                const float Y = IsOwner
+                    ? (-350.F + (TCount - 1) * 30.F - Idx * YSpacing)
+                    : (350.F - (TCount - 1) * 30.F + Idx * YSpacing);
+                const float Z = 180.F + Idx * 5.0F;
+                const float X = IsOwner ? -400.F : 500.F;
+
+                Card -> TargetLocation = FVector(X, Y, Z);
+            }
+            break;
+        }
+        case EZone::GraveZone:
+        {
+            // 墓地可以不显示或堆成一摞
+            break;
+        }
+        default: break;
+    }
+}
+
+void UEventListener::AddCardToZone(ACardModel* CardModel, EZone NewZone)
+{
+	if (!CardModel) return;
+	CardModel->CardStruct.CardZone = NewZone;
+	AllCardModels.AddUnique(CardModel);
+	RefreshZone(NewZone, CardModel->CardStruct.PlayerIndex);
+}
+
+void UEventListener::RemoveCardFromZone(ACardModel* CardModel)
+{
+	if (!CardModel) return;
+	const int PlayerIndex = CardModel -> CardStruct.PlayerIndex;
+	const EZone OldZone = CardModel -> CardStruct.CardZone;
+	AllCardModels.Remove(CardModel);
+	RefreshZone(OldZone, PlayerIndex);
+}
+
 void UEventListener::DrawCard(const FEventPackageStruct& Package)
 {
 	ACardModel* CardModel = CreateCardModel(Package.Params[0].CardOrPlayer);
@@ -206,175 +318,5 @@ ACardModel* UEventListener::FindCardModel(const int CardIndex)
 		TotalCards.Emplace(Cast<ACardModel>(Idx));
 	}
 	return *TotalCards.FindByPredicate([CardIndex](const ACardModel* CardModel) {return CardModel && CardModel -> CardStruct.CardIndex == CardIndex;});
-}
-//*************************************************************************
-
-//****************************分发卡牌更新********************************
-void UEventListener::RefreshHandZone(const int PlayerIndex)
-{
-	auto GetY = [](const int Count) -> float
-	{
-		if (Count <= 2) return 66.F;
-		if (Count >= 10) return 30.F;
-		return 66.F + (30.f - 66.F) * (Count - 2) / 8;
-	};
-
-	if (Controller->PlayerState->GetPlayerId() == PlayerIndex)
-	{
-		const int Count = OwnerHandZone.Num();
-		const float YSpacing = GetY(Count);
-		
-		for (int Idx = 0; Idx < Count; ++Idx)
-		{
-			ACardModel* CardModel = OwnerHandZone[Idx];
-			const float Y = 350.F - (Count - 1) * 30.f + Idx * YSpacing;
-			const float Z = 200.F + Idx * 5.0F;
-			CardModel -> TargetLocation = FVector(-400.F, Y, Z);
-		}
-	}
-	else
-	{
-		const int Count = EnemyHandZone.Num();
-		const float YSpacing = GetY(Count);
-		
-		for (int Idx = 0; Idx < Count; ++Idx)
-		{
-			ACardModel* CardModel = EnemyHandZone[Idx];
-			const float Y = -350.F + (Count - 1) * 30.f - Idx * YSpacing;
-			const float Z = 200.F + Idx * 5.0F;
-			CardModel -> TargetLocation = FVector(500.f, Y, Z);
-		}
-	}
-}
-
-void UEventListener::RemoveFromHandZone(ACardModel* CardModel)
-{
-	if (bool Owning = CardModel -> CardStruct.PlayerIndex == Controller -> PlayerState -> GetPlayerId())
-	{
-		OwnerHandZone.Remove(CardModel);
-	}
-	else
-	{
-		EnemyHandZone.Remove(CardModel);
-	}
-}
-
-void UEventListener::AddToHandZone(ACardModel* CardModel)
-{
-	if (bool Owning = CardModel -> CardStruct.PlayerIndex == Controller -> PlayerState -> GetPlayerId())
-	{
-		OwnerHandZone.Emplace(CardModel);
-	}
-	else
-	{
-		EnemyHandZone.Emplace(CardModel);
-	}
-}
-
-void UEventListener::RefreshBoardZone(const int PlayerIndex)
-{
-	if (Controller -> PlayerState -> GetPlayerId() == PlayerIndex)
-	{
-		const int Count = OwnerBoardZone.Num();
-		for (int Idx = 0; Idx < Count; ++Idx)
-		{
-			ACardModel* CardModel = OwnerBoardZone[Idx];
-			const float Y = -(Count - 1) * 100.F + Idx * 200.F;
-			CardModel -> TargetLocation = FVector(-120.F, Y, 180.F);
-		}
-	}
-	else
-	{
-		const int Count = EnemyBoardZone.Num();
-		for (int Idx = 0; Idx < Count; ++Idx)
-		{
-			ACardModel* CardModel = EnemyBoardZone[Idx];
-			const float Y = (Count - 1) * 100.F - Idx * 200.F;
-			CardModel -> TargetLocation = FVector(120.F, Y, 180.F);
-		}
-	}
-}
-
-void UEventListener::RemoveFromBoardZone(ACardModel* CardModel)
-{
-	if (bool Owning = CardModel -> CardStruct.PlayerIndex == Controller -> PlayerState -> GetPlayerId())
-	{
-		OwnerBoardZone.Remove(CardModel);
-	}
-	else
-	{
-		EnemyBoardZone.Remove(CardModel);
-	}
-}
-
-void UEventListener::AddToBoardZone(ACardModel* CardModel)
-{
-	if (bool Owning = CardModel -> CardStruct.PlayerIndex == Controller -> PlayerState -> GetPlayerId())
-	{
-		OwnerBoardZone.Emplace(CardModel);
-	}
-	else
-	{
-		EnemyBoardZone.Emplace(CardModel);
-	}
-}
-
-void UEventListener::RefreshEchoZone(const int PlayerIndex)
-{
-	auto GetY = [](const int Count) -> float
-	{
-		if (Count <= 2) return 66.F;
-		if (Count >= 6) return 30.F;
-		return 66.F + (30.F - 66.F) * (Count - 2) / 4;
-	};
-	
-	if (Controller -> PlayerState -> GetPlayerId() == PlayerIndex)
-	{
-		const int Count = OwnerEchoZone.Num();
-		const float YSpacing = GetY(Count);
-		for (int Idx = 0; Idx < Count; ++Idx)
-		{
-			ACardModel* CardModel = OwnerEchoZone[Idx];
-			const float Y = -350.F + (Count - 1) * 30.F - Idx * YSpacing;
-			const float Z = 180.F + Idx * 5.0F;
-			CardModel -> TargetLocation = FVector(-400.F, Y, Z);
-		}
-	}
-	else
-	{
-		const int Count = EnemyEchoZone.Num();
-		for (int Idx = 0; Idx < Count; ++Idx)
-		{
-			const float YSpacing = GetY(Count);
-			ACardModel* CardModel = EnemyEchoZone[Idx];
-			const float Y = 350.F - (Count - 1) * 30.F + Idx * YSpacing;
-			const float Z = 180.F + Idx * 5.0F;
-			CardModel -> TargetLocation = FVector(500.F, Y, Z);
-		}
-	}
-}
-
-void UEventListener::RemoveFromEchoZone(ACardModel* CardModel)
-{
-	if (bool Owning = CardModel -> CardStruct.PlayerIndex == Controller -> PlayerState -> GetPlayerId())
-	{
-		OwnerEchoZone.Remove(CardModel);
-	}
-	else
-	{
-		EnemyEchoZone.Remove(CardModel);
-	}
-}
-
-void UEventListener::AddToEchoZone(ACardModel* CardModel)
-{
-	if (bool Owning = CardModel -> CardStruct.PlayerIndex == Controller -> PlayerState -> GetPlayerId())
-	{
-		OwnerEchoZone.Emplace(CardModel);
-	}
-	else
-	{
-		EnemyEchoZone.Emplace(CardModel);
-	}
 }
 //*************************************************************************

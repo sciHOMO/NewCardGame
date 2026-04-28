@@ -12,13 +12,12 @@
   <component name="ChangeListManager">
     <list default="true" id="c74a718f-9b99-4263-9cf9-fd0684de377e" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.ENITAS/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.ENITAS/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Arena1.umap" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Library/CardInfoLib.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Library/CardInfoLib.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/UMG/BP_MainUMG.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/UMG/BP_MainUMG.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ENITAS/Client/MainUMG.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ENITAS/Client/MainUMG.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ENITAS/Client/MainUMG.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ENITAS/Client/MainUMG.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Gameplay/BP_CardModel.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Gameplay/BP_CardModel.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ENITAS/Client/CardModel.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ENITAS/Client/CardModel.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ENITAS/Client/CardModel.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ENITAS/Client/CardModel.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ENITAS/Client/EventListener.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ENITAS/Client/EventListener.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ENITAS/Client/EventListener.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ENITAS/Client/EventListener.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/ENITAS/GamePlay/CardPlayer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ENITAS/GamePlay/CardPlayer.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ENITAS/GamePlay/CardPlayer.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ENITAS/GamePlay/CardPlayer.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -30,7 +29,6 @@
     <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
     <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
     <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="cidr-memory-view://3" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;customColor&quot;: &quot;&quot;,
@@ -452,6 +450,7 @@
       <workItem from="1777190741282" duration="584000" />
       <workItem from="1777191386424" duration="3325000" />
       <workItem from="1777217935057" duration="3166000" />
+      <workItem from="1777387485006" duration="2851000" />
     </task>
     <servers />
   </component>
@@ -460,5 +459,21 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/Source/ENITAS/CardCoreSystem/CardCoreDriver.cpp</url>
+          <line>592</line>
+          <option name="timeStamp" value="2" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/Source/ENITAS/CardCoreSystem/CardCoreDriver.cpp</url>
+          <line>553</line>
+          <option name="timeStamp" value="3" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

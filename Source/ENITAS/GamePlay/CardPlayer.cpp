@@ -200,15 +200,19 @@ void ACardPlayer::LeftMouseButtonClicked()
 		{
 			if (CheckHitResult() && CheckHitResult() != FocusActor)
 			{
-				if (!SacrificeMap.Contains(CheckHitResult() -> CardStruct.CardID))
+				if (!SacrificeMap.Contains(CheckHitResult() -> CardStruct.CardIndex))
 				{
+					if (SacrificeMap.Num() >= FocusActor -> CardStruct.CardLevel)
+					{
+						break;
+					}
 					CheckHitResult() -> SetCardState(EState::Focus);
-					SacrificeMap.Emplace(CheckHitResult() -> CardStruct.CardID, CheckHitResult());
+					SacrificeMap.Emplace(CheckHitResult() -> CardStruct.CardIndex, CheckHitResult());
 				}
 				else
 				{
 					CheckHitResult() -> SetCardState(EState::Lerp);
-					SacrificeMap.Remove(CheckHitResult() -> CardStruct.CardID);
+					SacrificeMap.Remove(CheckHitResult() -> CardStruct.CardIndex);
 				}
 				MainUMG -> NotifyPickUpCount(SacrificeMap.Num());
 			}

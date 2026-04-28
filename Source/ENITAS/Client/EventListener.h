@@ -69,30 +69,21 @@ public:
 	//***********************************************************************
 
 	//***************************本地效果管理*******************************
-	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly)	//生成卡牌并传入对应位置，便于检索
-	TArray<ACardModel*> EnemyHandZone = {};
+	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly)	//所有卡牌，生成卡牌并传入对应位置，便于检索
+	TArray<ACardModel*> AllCardModels = {};
+	
+	UFUNCTION()
+	void GetCardsByZone(EZone Zone, int PlayerIndex, TArray<ACardModel*>& OutCards) const;
 
-	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly)
-	TArray<ACardModel*> EnemyBoardZone = {};
+	UFUNCTION()
+	void RefreshZone(EZone Zone, int PlayerIndex);
 
-	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly)
-	TArray<ACardModel*> EnemyEchoZone = {};
+	UFUNCTION()
+	void AddCardToZone(ACardModel* CardModel, EZone NewZone);
 
-	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly)
-	TArray<ACardModel*> EnemyGraveZone = {};
-
-	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly)
-	TArray<ACardModel*> OwnerHandZone = {};
-
-	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly)
-	TArray<ACardModel*> OwnerBoardZone = {};
-
-	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly)
-	TArray<ACardModel*> OwnerEchoZone = {};
-
-	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly)
-	TArray<ACardModel*> OwnerGraveZone = {};
-
+	UFUNCTION()
+	void RemoveCardFromZone(ACardModel* CardModel);
+	
 	UFUNCTION()
 	void DrawCard(const FEventPackageStruct& Package);
 
@@ -107,34 +98,5 @@ public:
 
 	UFUNCTION()
 	ACardModel* FindCardModel(const int CardIndex);
-	//***********************************************************************
-	
-	//***************************分发卡牌更新******************************
-	UFUNCTION()
-	void RefreshHandZone(const int PlayerIndex);
-
-	UFUNCTION()
-	void RemoveFromHandZone(ACardModel* CardModel);
-	
-	UFUNCTION()
-	void AddToHandZone(ACardModel* CardModel);
-
-	UFUNCTION()
-	void RefreshBoardZone(const int PlayerIndex);
-
-	UFUNCTION()
-	void RemoveFromBoardZone(ACardModel* CardModel);
-	
-	UFUNCTION()
-	void AddToBoardZone(ACardModel* CardModel);
-
-	UFUNCTION()
-	void RefreshEchoZone(const int PlayerIndex);
-
-	UFUNCTION()
-	void RemoveFromEchoZone(ACardModel* CardModel);
-	
-	UFUNCTION()
-	void AddToEchoZone(ACardModel* CardModel);
 	//***********************************************************************
 };

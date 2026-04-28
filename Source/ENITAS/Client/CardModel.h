@@ -60,6 +60,9 @@ public:
 	UEventListener* EventListener = nullptr;
 
 	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly)
+	EZone CurrentZone = EZone::PlaceHolder;
+	
+	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly)
 	FVector TargetLocation = FVector::ZeroVector;
 
 	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly)

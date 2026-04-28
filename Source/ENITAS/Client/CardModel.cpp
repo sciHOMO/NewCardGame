@@ -55,8 +55,8 @@ void ACardModel::SetCardState(EState NewState)
 			AdditiveLocation = FVector::ZeroVector;
 			if (CardState == EState::Follow)
 			{
-				EventListener -> AddToHandZone(this);
-				EventListener -> RefreshHandZone(CardStruct.PlayerIndex);
+				EventListener -> AddCardToZone(this, EZone::HandZone);
+				EventListener -> RefreshZone(EZone::HandZone, CardStruct.PlayerIndex);
 				break;
 			}
 			break;
@@ -65,8 +65,8 @@ void ACardModel::SetCardState(EState NewState)
 		{
 			if (CardState == EState::Lerp || CardState == EState::Focus)
 			{
-				EventListener -> RemoveFromHandZone(this);
-				EventListener -> RefreshHandZone(CardStruct.PlayerIndex);
+				EventListener -> RemoveCardFromZone(this);
+				EventListener -> RefreshZone(EZone::HandZone, CardStruct.PlayerIndex);
 				break;
 			}
 			break;
@@ -93,8 +93,8 @@ void ACardModel::SetCardState(EState NewState)
 			SetActorEnableCollision(false);
 			if (CardState == EState::Follow)
 			{
-				EventListener -> RemoveFromHandZone(this);
-				EventListener -> RefreshHandZone(CardStruct.PlayerIndex);
+				EventListener -> RemoveCardFromZone(this);
+				EventListener -> RefreshZone(EZone::HandZone, CardStruct.PlayerIndex);
 				break;
 			}
 			break;
@@ -126,8 +126,8 @@ void ACardModel::StartDrawCard_Implementation(const bool Owning, const FEventPac
 
 void ACardModel::EndDrawCard()
 {
-	EventListener -> AddToHandZone(this);
-	EventListener -> RefreshHandZone(CardStruct.PlayerIndex);
+	EventListener -> AddCardToZone(this, EZone::HandZone);
+	EventListener -> RefreshZone(EZone::HandZone, CardStruct.PlayerIndex);
 	EventListener -> Clear(PackageStruct.GlobalEventIndex);
 	SetCardState(EState::Lerp);
 }
@@ -141,9 +141,9 @@ void ACardModel::StartSummonServant_Implementation(const bool Owning, const FEve
 
 void ACardModel::EndSummonServant()
 {
-	EventListener -> RemoveFromHandZone(this);
-	EventListener -> AddToBoardZone(this);
-	EventListener -> RefreshBoardZone(CardStruct.PlayerIndex);
+	EventListener -> RemoveCardFromZone(this);
+	EventListener -> AddCardToZone(this, EZone::BoardZone);
+	EventListener -> RefreshZone(EZone::BoardZone, CardStruct.PlayerIndex);
 	EventListener -> Clear(PackageStruct.GlobalEventIndex);
 	SetCardState(EState::Lerp);
 }
@@ -157,15 +157,15 @@ void ACardModel::StartCastSpell_Implementation(const bool Owning, const FEventPa
 
 void ACardModel::EndCastSpell()
 {
-	EventListener -> RemoveFromHandZone(this);
+	EventListener -> RemoveCardFromZone(this);
 	if (CardStruct.CardZone == EZone::GraveZone)
 	{
 		SetCardState(EState::Hide);
 	}
 	else if (CardStruct.CardZone == EZone::EchoZone)
 	{
-		EventListener -> AddToEchoZone(this);
-		EventListener -> RefreshEchoZone(CardStruct.PlayerIndex);
+		EventListener -> AddCardToZone(this, EZone::EchoZone);
+		EventListener -> RefreshZone(EZone::EchoZone, CardStruct.PlayerIndex);
 		SetCardState(EState::Lerp);
 	}
 	EventListener -> Clear(PackageStruct.GlobalEventIndex);
