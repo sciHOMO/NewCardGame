@@ -291,7 +291,7 @@ void UEventListener::SummonServant(const FEventPackageStruct& Package)
 
 void UEventListener::CastSpell(const FEventPackageStruct& Package)
 {
-	ACardModel* CardModel =FindCardModel(Package.Params[0].CardOrPlayer.CardIndex);
+	ACardModel* CardModel = FindCardModel(Package.Params[0].CardOrPlayer.CardIndex);
 	const bool Owning = Package.Params[0].CardOrPlayer.PlayerIndex == Controller -> PlayerState -> GetPlayerId();
 	CardModel -> StartCastSpell(Owning, Package);
 }
