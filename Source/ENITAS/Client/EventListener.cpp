@@ -107,21 +107,25 @@ void UEventListener::HandleTurnEnd(const FEventPackageStruct& Package)
 
 void UEventListener::HandleCardMove(const FEventPackageStruct& Package)
 {
-	if (Package.Params[0].CardOrPlayer.CardZone == EZone::HandZone && Package.Params[1].ZoneValue == EZone::DeckZone)
+	const EZone FromZone = Package.Params[1].ZoneValue;      // 从哪里来
+	const EZone ToZone = Package.Params[0].CardOrPlayer.CardZone;  // 到哪里去
+	
+	if (FromZone == EZone::DeckZone && ToZone == EZone::HandZone)
 	{
 		DrawCard(Package); return;
 	}
-	if (Package.Params[0].CardOrPlayer.CardZone == EZone::BoardZone && Package.Params[0].CardOrPlayer.CardType == EType::Servant &&
-		Package.Params[1].ZoneValue == EZone::HandZone)
+	
+	if (FromZone == EZone::HandZone && ToZone == EZone::BoardZone && 
+		Package.Params[0].CardOrPlayer.CardType == EType::Servant)
 	{
 		SummonServant(Package); return;
 	}
-	if ((Package.Params[0].CardOrPlayer.CardZone == EZone::EchoZone || Package.Params[0].CardOrPlayer.CardZone == EZone::GraveZone)
-		&& Package.Params[0].CardOrPlayer.CardType == EType::Spell && Package.Params[1].ZoneValue == EZone::HandZone)
+	
+	if (FromZone == EZone::HandZone && (ToZone == EZone::EchoZone || ToZone == EZone::GraveZone)
+		&& Package.Params[0].CardOrPlayer.CardType == EType::Spell)
 	{
 		CastSpell(Package); return;
 	}
-	
 }
 
 void UEventListener::HandleCardAttach(const FEventPackageStruct& Package)
@@ -304,19 +308,20 @@ ACardModel* UEventListener::CreateCardModel(const FCardStruct& CardStruct)
 	ACardModel* NewCard = GetWorld() -> SpawnActor<ACardModel>(CardStruct.CardModelClass, SpawnTransform);
 	NewCard -> CardStruct = CardStruct;
 	NewCard -> EventListener = this;
+	AllCardModels.Add(NewCard);
 	
 	return NewCard ? NewCard : nullptr;
 }
 
 ACardModel* UEventListener::FindCardModel(const int CardIndex)
 {
-	TArray<AActor*> TotalActors;
-	UGameplayStatics::GetAllActorsOfClass(Controller -> GetWorld(), ACardModel::StaticClass(), TotalActors);
-	TArray<ACardModel*> TotalCards;
-	for (AActor* Idx : TotalActors)
+	for (ACardModel* Card : AllCardModels)
 	{
-		TotalCards.Emplace(Cast<ACardModel>(Idx));
+		if (Card && Card->CardStruct.CardIndex == CardIndex)
+		{
+			return Card;
+		}
 	}
-	return *TotalCards.FindByPredicate([CardIndex](const ACardModel* CardModel) {return CardModel && CardModel -> CardStruct.CardIndex == CardIndex;});
+	return nullptr;
 }
 //*************************************************************************

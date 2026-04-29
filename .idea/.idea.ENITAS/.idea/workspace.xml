@@ -12,12 +12,8 @@
   <component name="ChangeListManager">
     <list default="true" id="c74a718f-9b99-4263-9cf9-fd0684de377e" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.ENITAS/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.ENITAS/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Gameplay/BP_CardModel.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Gameplay/BP_CardModel.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ENITAS/Client/CardModel.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ENITAS/Client/CardModel.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ENITAS/Client/CardModel.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ENITAS/Client/CardModel.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/ENITAS/Client/EventListener.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ENITAS/Client/EventListener.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ENITAS/Client/EventListener.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ENITAS/Client/EventListener.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ENITAS/GamePlay/CardPlayer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ENITAS/GamePlay/CardPlayer.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ENITAS/ENITAS.Build.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ENITAS/ENITAS.Build.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -450,7 +446,7 @@
       <workItem from="1777190741282" duration="584000" />
       <workItem from="1777191386424" duration="3325000" />
       <workItem from="1777217935057" duration="3166000" />
-      <workItem from="1777387485006" duration="2851000" />
+      <workItem from="1777387485006" duration="4088000" />
     </task>
     <servers />
   </component>
