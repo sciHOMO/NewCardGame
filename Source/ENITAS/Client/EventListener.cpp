@@ -110,22 +110,24 @@ void UEventListener::HandleCardMove(const FEventPackageStruct& Package)
 	const EZone FromZone = Package.Params[1].ZoneValue;      // 从哪里来
 	const EZone ToZone = Package.Params[0].CardOrPlayer.CardZone;  // 到哪里去
 	
-	if (FromZone == EZone::DeckZone && ToZone == EZone::HandZone)
+	if (FromZone == EZone::DeckZone && ToZone == EZone::HandZone && Package.Params[2].Reason == EReason::Normally)
 	{
 		DrawCard(Package); return;
 	}
 	
 	if (FromZone == EZone::HandZone && ToZone == EZone::BoardZone && 
-		Package.Params[0].CardOrPlayer.CardType == EType::Servant)
+		Package.Params[0].CardOrPlayer.CardType == EType::Servant && Package.Params[2].Reason == EReason::Normally)
 	{
 		SummonServant(Package); return;
 	}
 	
 	if (FromZone == EZone::HandZone && (ToZone == EZone::EchoZone || ToZone == EZone::GraveZone)
-		&& Package.Params[0].CardOrPlayer.CardType == EType::Spell)
+		&& Package.Params[0].CardOrPlayer.CardType == EType::Spell && Package.Params[2].Reason == EReason::Normally)
 	{
 		CastSpell(Package); return;
 	}
+
+	Clear(Package.GlobalEventIndex);
 }
 
 void UEventListener::HandleCardAttach(const FEventPackageStruct& Package)
@@ -278,6 +280,8 @@ void UEventListener::RemoveCardFromZone(ACardModel* CardModel)
 void UEventListener::DrawCard(const FEventPackageStruct& Package)
 {
 	ACardModel* CardModel = CreateCardModel(Package.Params[0].CardOrPlayer);
+	if (!CardModel) return;
+	AllCardModels.Emplace(CardModel);
 	const bool Owning = Package.Params[0].CardOrPlayer.PlayerIndex == Controller -> PlayerState -> GetPlayerId();
 	CardModel -> StartDrawCard(Owning, Package);
 }
@@ -285,6 +289,7 @@ void UEventListener::DrawCard(const FEventPackageStruct& Package)
 void UEventListener::SummonServant(const FEventPackageStruct& Package)
 {
 	ACardModel* CardModel =FindCardModel(Package.Params[0].CardOrPlayer.CardIndex);
+	if (!CardModel) return;
 	const bool Owning = Package.Params[0].CardOrPlayer.PlayerIndex == Controller -> PlayerState -> GetPlayerId();
 	CardModel -> StartSummonServant(Owning, Package);
 }
@@ -292,6 +297,7 @@ void UEventListener::SummonServant(const FEventPackageStruct& Package)
 void UEventListener::CastSpell(const FEventPackageStruct& Package)
 {
 	ACardModel* CardModel = FindCardModel(Package.Params[0].CardOrPlayer.CardIndex);
+	if (!CardModel) return;
 	const bool Owning = Package.Params[0].CardOrPlayer.PlayerIndex == Controller -> PlayerState -> GetPlayerId();
 	CardModel -> StartCastSpell(Owning, Package);
 }
@@ -308,13 +314,13 @@ ACardModel* UEventListener::CreateCardModel(const FCardStruct& CardStruct)
 	ACardModel* NewCard = GetWorld() -> SpawnActor<ACardModel>(CardStruct.CardModelClass, SpawnTransform);
 	NewCard -> CardStruct = CardStruct;
 	NewCard -> EventListener = this;
-	AllCardModels.Add(NewCard);
 	
-	return NewCard ? NewCard : nullptr;
+	return NewCard;
 }
 
 ACardModel* UEventListener::FindCardModel(const int CardIndex)
 {
+	
 	for (ACardModel* Card : AllCardModels)
 	{
 		if (Card && Card->CardStruct.CardIndex == CardIndex)

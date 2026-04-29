@@ -29,6 +29,8 @@ UENUM(BlueprintType)
 enum class EReason : uint8
 {
 	PlaceHolder			UMETA(DisplayName = "PlaceHolder"),
+	Normally					UMETA(DisplayName = "Normally"),
+	Sacrifice					UMETA(DisplayName = "Sacrifice"),
 };
 
 USTRUCT(Blueprintable, BlueprintType)
@@ -119,7 +121,7 @@ enum class EPackageType : uint8
 	GameEnd					UMETA(DisplayName = "GameEnd"),					//[0] 胜利玩家ID：IntValue
 	TurnStart						UMETA(DisplayName = "TurnStart"),						//[0] 回合玩家ID：IntValue
 	TurnEnd						UMETA(DisplayName = "TurnEnd"),						//[0] 回合玩家ID：IntValue
-	CardMove					UMETA(DisplayName = "CardMove"),					//[0] 卡牌结构体：CardOrPlayer [1] 位置：FromZoneValue
+	CardMove					UMETA(DisplayName = "CardMove"),					//[0] 卡牌结构体：CardOrPlayer [1] 位置：FromZoneValue [2] 移动原因：Reason
 	CardAttach					UMETA(DisplayName = "CardAttach"),					//[0] 卡牌结构体：CardOrPlayer [1] 卡牌结构体：CardOrPlayer 
 	CardAttack					UMETA(DisplayName = "CardAttack"),					//[0] 卡牌结构体：CardOrPlayer [1] 卡牌结构体：CardOrPlayer 
 	CardApplyDamage		UMETA(DisplayName = "CardApplyDamage"),		//[0] 卡牌结构体：CardOrPlayer [1] 伤害数值：IntValue

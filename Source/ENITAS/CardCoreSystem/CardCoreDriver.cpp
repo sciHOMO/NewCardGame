@@ -438,6 +438,7 @@ void ACardCoreDriver::CardMove(UCardInstance* CardInstance, EZone FromZone, EZon
 	Package.PackageType = EPackageType::CardMove;
 	Package.Params.Add(FEventParamStruct::MakeCardOrPlayer(CardInstance -> CardStruct));
 	Package.Params.Add(FEventParamStruct::MakeZone(FromZone));
+	Package.Params.Add(FEventParamStruct::MakeReason(Reason));
 	Package.GlobalEventIndex = GlobalEventIndex++;
 	DispatchEventPackageSync(Package);
 }
@@ -507,7 +508,7 @@ void ACardCoreDriver::NormalDraw(const int PlayerIndex, const int Num)
 	{
 		if (UCardInstance* CardInstance = GetCardInstanceByPlayerIndexAndZone(PlayerIndex, EZone::DeckZone))
 		{
-			CardMove(CardInstance, EZone::DeckZone, EZone::HandZone, EReason::PlaceHolder);
+			CardMove(CardInstance, EZone::DeckZone, EZone::HandZone, EReason::Normally);
 		}
 	}
 }
@@ -610,7 +611,7 @@ void ACardCoreDriver::SummonServant(const int SourceCard, const int TargetCard, 
 {
 	if (!GetCardInstanceByIndex(SourceCard)) return;
 	
-	CardMove(GetCardInstanceByIndex(SourceCard), EZone::HandZone, EZone::BoardZone, EReason::PlaceHolder);
+	CardMove(GetCardInstanceByIndex(SourceCard), EZone::HandZone, EZone::BoardZone, EReason::Normally);
 	
 	UEffectContextForOnSummonServant* MulticastContext = NewObject<UEffectContextForOnSummonServant>(GetWorld());
 	MulticastContext -> Condition = ECondition::OnSummonServant;
@@ -656,7 +657,7 @@ void ACardCoreDriver::BuildTerrain(const int SourceCard, const int TargetCard, c
 {
 	if (!GetCardInstanceByIndex(SourceCard)) return;
 	
-	CardMove(GetCardInstanceByIndex(SourceCard), EZone::HandZone, EZone::BoardZone, EReason::PlaceHolder);
+	CardMove(GetCardInstanceByIndex(SourceCard), EZone::HandZone, EZone::BoardZone, EReason::Normally);
 		
 	UEffectContextForOnBuildTerrain* MulticastContext = NewObject<UEffectContextForOnBuildTerrain>(GetWorld());
 	MulticastContext -> Condition = ECondition::OnBuildTerrain;
@@ -679,7 +680,7 @@ void ACardCoreDriver::AttachEquip(const int SourceCard, const int TargetCard, co
 {
 	if (!GetCardInstanceByIndex(SourceCard)) return;
 	
-	CardMove(GetCardInstanceByIndex(SourceCard), EZone::HandZone, EZone::BoardZone, EReason::PlaceHolder);
+	CardMove(GetCardInstanceByIndex(SourceCard), EZone::HandZone, EZone::BoardZone, EReason::Normally);
 	CardAttach(GetCardInstanceByIndex(SourceCard), GetCardInstanceByIndex(TargetCard), EReason::PlaceHolder);
 
 	UEffectContextForOnAttachEquip* MulticastContext = NewObject<UEffectContextForOnAttachEquip>(GetWorld());
@@ -704,7 +705,7 @@ void ACardCoreDriver::PayCostAsSacrifice(const int SourceCard, const int Relativ
 	if (!GetCardInstanceByIndex(SourceCard)) return;
 	if (!GetCardInstanceByIndex(RelativeCard)) return;
 	
-	CardMove(GetCardInstanceByIndex(SourceCard), GetCardInstanceByIndex(SourceCard) -> CardStruct.CardZone, EZone::GraveZone, EReason::PlaceHolder);
+	CardMove(GetCardInstanceByIndex(SourceCard), GetCardInstanceByIndex(SourceCard) -> CardStruct.CardZone, EZone::GraveZone, EReason::Sacrifice);
 
 	UEffectContextForOnSacrificed* NewContext = NewObject<UEffectContextForOnSacrificed>(GetWorld());
 	NewContext -> Condition = ECondition::OnSacrificed;
@@ -719,7 +720,7 @@ void ACardCoreDriver::TryMoveToEcho(const int SourceCard, const int RelativeCard
 	if (GetZoneSizeByPlayerIndexAndZone(GetCardInstanceByIndex(SourceCard) -> CardStruct.PlayerIndex, EZone::EchoZone) != INT_ERROR &&
 		GetZoneSizeByPlayerIndexAndZone(GetCardInstanceByIndex(SourceCard) -> CardStruct.PlayerIndex, EZone::EchoZone) < 6)	//回响区仍有空余
 	{
-		CardMove(GetCardInstanceByIndex(SourceCard), GetCardInstanceByIndex(SourceCard) -> CardStruct.CardZone, EZone::EchoZone, EReason::PlaceHolder);
+		CardMove(GetCardInstanceByIndex(SourceCard), GetCardInstanceByIndex(SourceCard) -> CardStruct.CardZone, EZone::EchoZone, EReason::Normally);
 
 		UEffectContextForOnDeathRattle* MulticastContext = NewObject<UEffectContextForOnDeathRattle>(GetWorld());
 		MulticastContext -> Condition = ECondition::OnDeathRattle;
@@ -734,7 +735,7 @@ void ACardCoreDriver::TryMoveToEcho(const int SourceCard, const int RelativeCard
 	}
 	else
 	{
-		CardMove(GetCardInstanceByIndex(SourceCard), GetCardInstanceByIndex(SourceCard) -> CardStruct.CardZone, EZone::GraveZone, EReason::PlaceHolder);
+		CardMove(GetCardInstanceByIndex(SourceCard), GetCardInstanceByIndex(SourceCard) -> CardStruct.CardZone, EZone::GraveZone, EReason::Normally);
 	}
 }
 
