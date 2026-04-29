@@ -41,6 +41,10 @@ void UEventListener::CheckQueue()
 
 void UEventListener::Execute(const FEventPackageStruct& Package)
 {
+	UE_LOG(LogTemp, Log, TEXT("=== Execute 触发 ==="));
+	UE_LOG(LogTemp, Log, TEXT("PackageType: %d"), (int)Package.PackageType);
+	UE_LOG(LogTemp, Log, TEXT("GlobalEventIndex: %lld"), Package.GlobalEventIndex);
+	
 	switch (Package.PackageType)
 	{
 		case EPackageType::GameStart:					HandleGameStart(Package);					break;
@@ -107,26 +111,38 @@ void UEventListener::HandleTurnEnd(const FEventPackageStruct& Package)
 
 void UEventListener::HandleCardMove(const FEventPackageStruct& Package)
 {
+	// 输出详细日志
+	UE_LOG(LogTemp, Log, TEXT("=== HandleCardMove 触发 ==="));
+	UE_LOG(LogTemp, Log, TEXT("GlobalEventIndex: %lld"), Package.GlobalEventIndex);
+	UE_LOG(LogTemp, Log, TEXT("FromZone: %d, ToZone: %d"), (int)Package.Params[1].ZoneValue, (int)Package.Params[0].CardOrPlayer.CardZone);
+	UE_LOG(LogTemp, Log, TEXT("CardType: %d"), (int)Package.Params[0].CardOrPlayer.CardType);
+	UE_LOG(LogTemp, Log, TEXT("CardIndex: %d"), Package.Params[0].CardOrPlayer.CardIndex);
+	UE_LOG(LogTemp, Log, TEXT("Reason: %d"), (int)Package.Params[2].Reason);
+	
 	const EZone FromZone = Package.Params[1].ZoneValue;      // 从哪里来
 	const EZone ToZone = Package.Params[0].CardOrPlayer.CardZone;  // 到哪里去
 	
 	if (FromZone == EZone::DeckZone && ToZone == EZone::HandZone && Package.Params[2].Reason == EReason::Normally)
 	{
+		UE_LOG(LogTemp, Log, TEXT("→ 执行 DrawCard"));
 		DrawCard(Package); return;
 	}
 	
 	if (FromZone == EZone::HandZone && ToZone == EZone::BoardZone && 
 		Package.Params[0].CardOrPlayer.CardType == EType::Servant && Package.Params[2].Reason == EReason::Normally)
 	{
+		UE_LOG(LogTemp, Log, TEXT("→ 执行 SummonServant"));
 		SummonServant(Package); return;
 	}
 	
 	if (FromZone == EZone::HandZone && (ToZone == EZone::EchoZone || ToZone == EZone::GraveZone)
 		&& Package.Params[0].CardOrPlayer.CardType == EType::Spell && Package.Params[2].Reason == EReason::Normally)
 	{
+		UE_LOG(LogTemp, Log, TEXT("→ 执行 CastSpell"));
 		CastSpell(Package); return;
 	}
-
+	
+	UE_LOG(LogTemp, Log, TEXT("→ 未匹配任何处理分支，直接 Clear"));
 	Clear(Package.GlobalEventIndex);
 }
 
