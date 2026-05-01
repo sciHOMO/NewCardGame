@@ -96,4 +96,10 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void EndCastSpell();
+
+	UFUNCTION(BlueprintNativeEvent)
+	void StartDisappear(const bool Owning, const FEventPackageStruct& Package);
+
+	UFUNCTION(BlueprintCallable)
+	void EndDisappear();
 };

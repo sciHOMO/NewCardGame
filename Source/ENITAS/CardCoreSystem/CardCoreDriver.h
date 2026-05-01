@@ -34,6 +34,8 @@ class ACardCoreDriver : public AGameState
 	GENERATED_BODY()
 
 public:
+
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	
 	//****************************公共函数********************************
 	UFUNCTION()
@@ -99,13 +101,13 @@ public:
 	//********************************************************************
 
 	//*****************************游戏状态*******************************
-	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly)
+	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Replicated)
 	EPhase GamePhase = EPhase::GameStart;
 
-	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly)
+	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Replicated)
 	int WinnerIndex = INT_ERROR;
 	
-	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly)
+	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Replicated)
 	int TurnNum = 0;
 	
 	UFUNCTION()
@@ -198,7 +200,10 @@ public:
 	void AttachEquip(const int SourceCard, const int TargetCard, const TArray<int>& Sacrifice);
 
 	UFUNCTION()
-	void PayCostAsSacrifice(const int SourceCard, const int RelativeCard);
+	void PayCostAsSacrificeForMove(const int SourceCard, const int RelativeCard);
+
+	UFUNCTION()
+	void PayCostAsSacrificeForEffect(const int SourceCard, const int RelativeCard);
 
 	UFUNCTION()
 	void TryMoveToEcho(const int SourceCard, const int RelativeCard);

@@ -41,10 +41,6 @@ void UEventListener::CheckQueue()
 
 void UEventListener::Execute(const FEventPackageStruct& Package)
 {
-	UE_LOG(LogTemp, Log, TEXT("=== Execute 触发 ==="));
-	UE_LOG(LogTemp, Log, TEXT("PackageType: %d"), (int)Package.PackageType);
-	UE_LOG(LogTemp, Log, TEXT("GlobalEventIndex: %lld"), Package.GlobalEventIndex);
-	
 	switch (Package.PackageType)
 	{
 		case EPackageType::GameStart:					HandleGameStart(Package);					break;
@@ -111,38 +107,32 @@ void UEventListener::HandleTurnEnd(const FEventPackageStruct& Package)
 
 void UEventListener::HandleCardMove(const FEventPackageStruct& Package)
 {
-	// 输出详细日志
-	UE_LOG(LogTemp, Log, TEXT("=== HandleCardMove 触发 ==="));
-	UE_LOG(LogTemp, Log, TEXT("GlobalEventIndex: %lld"), Package.GlobalEventIndex);
-	UE_LOG(LogTemp, Log, TEXT("FromZone: %d, ToZone: %d"), (int)Package.Params[1].ZoneValue, (int)Package.Params[0].CardOrPlayer.CardZone);
-	UE_LOG(LogTemp, Log, TEXT("CardType: %d"), (int)Package.Params[0].CardOrPlayer.CardType);
-	UE_LOG(LogTemp, Log, TEXT("CardIndex: %d"), Package.Params[0].CardOrPlayer.CardIndex);
-	UE_LOG(LogTemp, Log, TEXT("Reason: %d"), (int)Package.Params[2].Reason);
 	
 	const EZone FromZone = Package.Params[1].ZoneValue;      // 从哪里来
 	const EZone ToZone = Package.Params[0].CardOrPlayer.CardZone;  // 到哪里去
 	
 	if (FromZone == EZone::DeckZone && ToZone == EZone::HandZone && Package.Params[2].Reason == EReason::Normally)
 	{
-		UE_LOG(LogTemp, Log, TEXT("→ 执行 DrawCard"));
 		DrawCard(Package); return;
 	}
 	
 	if (FromZone == EZone::HandZone && ToZone == EZone::BoardZone && 
 		Package.Params[0].CardOrPlayer.CardType == EType::Servant && Package.Params[2].Reason == EReason::Normally)
 	{
-		UE_LOG(LogTemp, Log, TEXT("→ 执行 SummonServant"));
 		SummonServant(Package); return;
 	}
 	
 	if (FromZone == EZone::HandZone && (ToZone == EZone::EchoZone || ToZone == EZone::GraveZone)
 		&& Package.Params[0].CardOrPlayer.CardType == EType::Spell && Package.Params[2].Reason == EReason::Normally)
 	{
-		UE_LOG(LogTemp, Log, TEXT("→ 执行 CastSpell"));
 		CastSpell(Package); return;
 	}
+
+	if (ToZone == EZone::GraveZone && Package.Params[2].Reason == EReason::Sacrifice)
+	{
+		Disappear(Package); return;
+	}
 	
-	UE_LOG(LogTemp, Log, TEXT("→ 未匹配任何处理分支，直接 Clear"));
 	Clear(Package.GlobalEventIndex);
 }
 
@@ -269,7 +259,8 @@ void UEventListener::RefreshZone(EZone Zone, int PlayerIndex)
         }
         case EZone::GraveZone:
         {
-            // 墓地可以不显示或堆成一摞
+            RefreshZone(EZone::HandZone, PlayerIndex);
+        	RefreshZone(EZone::EchoZone, PlayerIndex);
             break;
         }
         default: break;
@@ -279,9 +270,9 @@ void UEventListener::RefreshZone(EZone Zone, int PlayerIndex)
 void UEventListener::AddCardToZone(ACardModel* CardModel, EZone NewZone)
 {
 	if (!CardModel) return;
-	CardModel->CardStruct.CardZone = NewZone;
+	CardModel -> CardStruct.CardZone = NewZone;
 	AllCardModels.AddUnique(CardModel);
-	RefreshZone(NewZone, CardModel->CardStruct.PlayerIndex);
+	RefreshZone(NewZone, CardModel -> CardStruct.PlayerIndex);
 }
 
 void UEventListener::RemoveCardFromZone(ACardModel* CardModel)
@@ -316,6 +307,14 @@ void UEventListener::CastSpell(const FEventPackageStruct& Package)
 	if (!CardModel) return;
 	const bool Owning = Package.Params[0].CardOrPlayer.PlayerIndex == Controller -> PlayerState -> GetPlayerId();
 	CardModel -> StartCastSpell(Owning, Package);
+}
+
+void UEventListener::Disappear(const FEventPackageStruct& Package)
+{
+	ACardModel* CardModel = FindCardModel(Package.Params[0].CardOrPlayer.CardIndex);
+	if (!CardModel) return;
+	const bool Owning = Package.Params[0].CardOrPlayer.PlayerIndex == Controller -> PlayerState -> GetPlayerId();
+	CardModel -> StartDisappear(Owning, Package);
 }
 
 ACardModel* UEventListener::CreateCardModel(const FCardStruct& CardStruct)

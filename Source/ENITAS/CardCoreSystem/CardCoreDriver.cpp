@@ -1,4 +1,5 @@
 #include "../CardCoreSystem/CardCoreDriver.h"
+#include "Net/UnrealNetwork.h"
 #include "../CardCoreSystem/EventPackage.h"
 #include "../CardCoreSystem/EffectContext.h"
 #include "../CardCoreSystem/EffectInstance.h"
@@ -8,6 +9,15 @@
 #include "../GamePlay/AIPlayer.h"
 #include "../GamePlay/CardPlayer.h"
 #include "Kismet/GameplayStatics.h"
+
+void ACardCoreDriver::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(ACardCoreDriver, GamePhase);
+	DOREPLIFETIME(ACardCoreDriver, WinnerIndex);
+	DOREPLIFETIME(ACardCoreDriver, TurnNum);
+}
 
 //*****************************公共函数*********************************
 UCardInstance* ACardCoreDriver::GetCardInstanceByIndex(const int CardIndex)	//基于卡牌ID寻找卡牌
@@ -540,6 +550,11 @@ void ACardCoreDriver::ReceiveEndTurn(const int PlayerIndex)
 void ACardCoreDriver::ReceivePlayCard(const int PlayerIndex, const int SourceCard, const int TargetCard, const TArray<int>& Sacrifice)	//基于后进先出的顺序，先生成本身的事件，再检测代价
 {
 	if (false) return;
+
+	for (const int Idx : Sacrifice)
+	{
+		PayCostAsSacrificeForMove(Idx, SourceCard);
+	}
 	
 	switch(GetCardInstanceByIndex(SourceCard) -> CardStruct.CardType)
 	{
@@ -549,12 +564,12 @@ void ACardCoreDriver::ReceivePlayCard(const int PlayerIndex, const int SourceCar
 		case EType::Equip :	AttachEquip(SourceCard, TargetCard, Sacrifice); break;
 		default	: break;
 	}
-
+	
 	for (const int Idx : Sacrifice)
 	{
-		PayCostAsSacrifice(Idx, SourceCard);
+		PayCostAsSacrificeForEffect(Idx, SourceCard);
 	}
-
+	
 	SolveStack();
 }
 
@@ -577,6 +592,11 @@ void ACardCoreDriver::ReceiveActivate(const int PlayerIndex, const int SourceCar
 		SacrificeCardInstances.Emplace(GetCardInstanceByIndex(Idx));
 	}
 
+	for (const int Idx : Sacrifice)
+	{
+		PayCostAsSacrificeForMove(Idx, SourceCard);
+	}
+	
 	CardActivate(GetCardInstanceByIndex(SourceCard), SacrificeCardInstances, EReason::PlaceHolder);
 	
 	UEffectContextForOnActivate* MulticastContext = NewObject<UEffectContextForOnActivate>(GetWorld());
@@ -591,7 +611,7 @@ void ACardCoreDriver::ReceiveActivate(const int PlayerIndex, const int SourceCar
 	
 	for (const int Idx : Sacrifice)
 	{
-		PayCostAsSacrifice(Idx, SourceCard);
+		PayCostAsSacrificeForEffect(Idx, SourceCard);
 	}
 
 	SolveStack();
@@ -700,12 +720,18 @@ void ACardCoreDriver::AttachEquip(const int SourceCard, const int TargetCard, co
 	CreateNewEffectForCondition(GetCardInstanceByIndex(SourceCard), NewContext);
 }
 
-void ACardCoreDriver::PayCostAsSacrifice(const int SourceCard, const int RelativeCard)
+void ACardCoreDriver::PayCostAsSacrificeForMove(const int SourceCard, const int RelativeCard)
 {
 	if (!GetCardInstanceByIndex(SourceCard)) return;
 	if (!GetCardInstanceByIndex(RelativeCard)) return;
 	
 	CardMove(GetCardInstanceByIndex(SourceCard), GetCardInstanceByIndex(SourceCard) -> CardStruct.CardZone, EZone::GraveZone, EReason::Sacrifice);
+}
+
+void ACardCoreDriver::PayCostAsSacrificeForEffect(const int SourceCard, const int RelativeCard)
+{
+	if (!GetCardInstanceByIndex(SourceCard)) return;
+	if (!GetCardInstanceByIndex(RelativeCard)) return;
 
 	UEffectContextForOnSacrificed* NewContext = NewObject<UEffectContextForOnSacrificed>(GetWorld());
 	NewContext -> Condition = ECondition::OnSacrificed;

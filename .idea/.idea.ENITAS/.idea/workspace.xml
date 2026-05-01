@@ -11,9 +11,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c74a718f-9b99-4263-9cf9-fd0684de377e" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/Source/ENITAS/Misc/RuleChecker.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.ENITAS/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.ENITAS/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/UMG/BP_PickUpSacrifice.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/UMG/BP_PickUpSacrifice.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ENITAS.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ENITAS/CardCoreSystem/CardCoreDriver.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ENITAS/CardCoreSystem/CardCoreDriver.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ENITAS/CardCoreSystem/CardCoreDriver.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ENITAS/CardCoreSystem/CardCoreDriver.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ENITAS/CardCoreSystem/EffectInstance.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ENITAS/CardCoreSystem/EffectInstance.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ENITAS/CardCoreSystem/EffectInstance.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ENITAS/CardCoreSystem/EffectInstance.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/ENITAS/Client/CardModel.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ENITAS/Client/CardModel.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ENITAS/Client/CardModel.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ENITAS/Client/CardModel.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/ENITAS/Client/EventListener.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ENITAS/Client/EventListener.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ENITAS/Client/EventListener.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ENITAS/Client/EventListener.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ENITAS/GamePlay/CardPlayer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ENITAS/GamePlay/CardPlayer.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -106,7 +116,7 @@
   </component>
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
-    &quot;C++ Project.ENITAS.executor&quot;: &quot;Debug&quot;,
+    &quot;C++ Project.ENITAS.executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
@@ -517,7 +527,10 @@
       <workItem from="1777217935057" duration="3166000" />
       <workItem from="1777387485006" duration="4545000" />
       <workItem from="1777469990711" duration="2538000" />
-      <workItem from="1777472560556" duration="3947000" />
+      <workItem from="1777472560556" duration="6199000" />
+      <workItem from="1777599145756" duration="100000" />
+      <workItem from="1777599386251" duration="4334000" />
+      <workItem from="1777604106749" duration="2158000" />
     </task>
     <servers />
   </component>
@@ -526,16 +539,5 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/Source/ENITAS/CardCoreSystem/CardCoreDriver.cpp</url>
-          <line>593</line>
-          <option name="timeStamp" value="2" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
   </component>
 </project>

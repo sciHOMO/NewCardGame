@@ -56,7 +56,6 @@ void ACardModel::SetCardState(EState NewState)
 			if (CardState == EState::Follow)
 			{
 				EventListener -> AddCardToZone(this, EZone::HandZone);
-				EventListener -> RefreshZone(EZone::HandZone, CardStruct.PlayerIndex);
 				break;
 			}
 			break;
@@ -157,12 +156,27 @@ void ACardModel::EndCastSpell()
 	if (CardStruct.CardZone == EZone::GraveZone)
 	{
 		SetCardState(EState::Hide);
+		EventListener -> Disappear(PackageStruct);
 	}
 	else if (CardStruct.CardZone == EZone::EchoZone)
 	{
 		EventListener -> AddCardToZone(this, EZone::EchoZone);
 		SetCardState(EState::Lerp);
+		EventListener -> Clear(PackageStruct.GlobalEventIndex);
 	}
+}
+
+void ACardModel::StartDisappear_Implementation(const bool Owning, const FEventPackageStruct& Package)
+{
+	PackageStruct = Package;
+	CardStruct = Package.Params[0].CardOrPlayer;
+	EndDisappear();
+}
+
+void ACardModel::EndDisappear()
+{
+	EventListener -> AddCardToZone(this, EZone::GraveZone);
+	SetCardState(EState::Hide);
 	EventListener -> Clear(PackageStruct.GlobalEventIndex);
 }
 

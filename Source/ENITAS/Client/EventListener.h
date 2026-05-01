@@ -92,6 +92,9 @@ public:
 
 	UFUNCTION()
 	void CastSpell(const FEventPackageStruct& Package);
+
+	UFUNCTION()
+	void Disappear(const FEventPackageStruct& Package);
 	
 	UFUNCTION()
 	ACardModel* CreateCardModel(const FCardStruct& CardStruct);

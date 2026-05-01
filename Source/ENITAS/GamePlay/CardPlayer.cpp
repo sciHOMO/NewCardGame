@@ -8,6 +8,7 @@
 #include "../Client/MainUMG.h"
 #include "../Misc/MiscFunctionLibrary.h"
 #include "Blueprint/UserWidget.h"
+#include "ENITAS/Misc/RuleChecker.h"
 #include "Kismet/GameplayStatics.h"
 
 void ACardPlayer::BeginPlay()
@@ -192,13 +193,15 @@ void ACardPlayer::LeftMouseButtonClicked()
 		{
 			if (CheckHitResult() && CheckHitResult() == FocusActor)
 			{
+				MainUMG -> NotifyPickUpSacrifice(FocusActor -> CardStruct.CardLevel);	//需要修改
 				SetInputMode(EInputMode::Activate);
 			}
 			break;
 		}
 	case EInputMode::PickUpSacrifices :
 		{
-			if (CheckHitResult() && CheckHitResult() != FocusActor)
+			if (CheckHitResult() && CheckHitResult() != FocusActor &&
+				URuleChecker::IsValidTargetPickUp(Cast<ACardCoreDriver>(GetWorld() ->  GetGameState()), PlayerState -> GetPlayerId(), CheckHitResult() -> CardStruct, {}))
 			{
 				if (!SacrificeMap.Contains(CheckHitResult() -> CardStruct.CardIndex))
 				{
@@ -237,8 +240,11 @@ void ACardPlayer::LeftMouseButtonReleased()
 			{
 				if (FocusActor -> CardStruct.CardLevel == 0)
 				{
-					RequestPlayCard(FocusActor -> CardStruct.CardIndex, INT_ERROR, {});
-					SetInputMode(EInputMode::Idle);
+					if (URuleChecker::CanPlayCard_Client(Cast<ACardCoreDriver>(GetWorld() -> GetGameState()), PlayerState -> GetPlayerId(), FocusActor -> CardStruct, {}))
+					{
+						RequestPlayCard(FocusActor -> CardStruct.CardIndex, INT_ERROR, {});
+						SetInputMode(EInputMode::Idle);
+					}
 				}
 				else
 				{
@@ -281,11 +287,30 @@ void ACardPlayer::LeftMouseButtonReleased()
 void ACardPlayer::CallBackPickUpSacrifice()
 {
 	TArray<int> Result;
+	TArray<ACardModel*> Entity;
 	SacrificeMap.GenerateKeyArray(Result);
+	SacrificeMap.GenerateValueArray(Entity);
 	SacrificeMap.Empty();
-	
-	RequestPlayCard(FocusActor -> CardStruct.CardIndex, INT_ERROR, Result);
-	SetInputMode(EInputMode::Idle);
+
+	TArray<FCardStruct> List;
+	for (ACardModel* Idx : Entity)
+	{
+		List.Emplace(Idx -> CardStruct);
+	}
+
+	if (URuleChecker::CanPlayCard_Client(Cast<ACardCoreDriver>(GetWorld() -> GetGameState()), PlayerState -> GetPlayerId(), FocusActor -> CardStruct, Result))
+	{
+		RequestPlayCard(FocusActor -> CardStruct.CardIndex, INT_ERROR, Result);
+		SetInputMode(EInputMode::Idle);
+		return;
+	}
+
+	if (URuleChecker::CanActivate_Client(Cast<ACardCoreDriver>(GetWorld() -> GetGameState()), PlayerState -> GetPlayerId(), FocusActor -> CardStruct, List))	//分别筛选
+	{
+		//RequestActivate(FocusActor -> CardStruct.CardIndex, Result);
+		//SetInputMode(EInputMode::Idle);
+		return;
+	}
 }
 
 ACardModel* ACardPlayer::CheckHitResult() const
