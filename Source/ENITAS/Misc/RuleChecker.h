@@ -27,7 +27,7 @@ public:
 	static bool CanEndTurn_Client(const ACardCoreDriver* Driver, const int PlayerIndex);
 
 	UFUNCTION(BlueprintCallable, Category = "RuleChecker|Client")
-	static bool CanPlayCard_Client(const ACardCoreDriver* Driver, const int PlayerIndex, const FCardStruct& CardStruct, const TArray<int>& Sacrifice);
+	static bool CanPlayCard_Client(const ACardCoreDriver* Driver, const int PlayerIndex, const FCardStruct& CardStruct, const TArray<FCardStruct>& Sacrifice);
 
 	UFUNCTION(BlueprintCallable, Category = "RuleChecker|Client")
 	static bool CanAttack_Client(const ACardCoreDriver* Driver, const int PlayerIndex, const FCardStruct& AttackerStruct, const FCardStruct& DefenderStruct);

@@ -10,13 +10,14 @@ class UMainUMG;
 UENUM(BlueprintType)
 enum class EInputMode : uint8
 {
-	Idle							UMETA(DisplayName = "Idle"),
-	PlayCard					UMETA(DisplayName = "PlayCard"),
-	AttackOrActivate		UMETA(DisplayName = "AttackOrActivate"),
-	Attack						UMETA(DisplayName = "Attack"),
-	Activate					UMETA(DisplayName = "Activate"),
-	PickUpSacrifices		UMETA(DisplayName = "PickUpSacrifices"),
-	PickUpTargets			UMETA(DisplayName = "PickUpTargets"),
+	Idle											UMETA(DisplayName = "Idle"),
+	PlayCard									UMETA(DisplayName = "PlayCard"),
+	AttackOrActivate						UMETA(DisplayName = "AttackOrActivate"),
+	Attack										UMETA(DisplayName = "Attack"),
+	Activate									UMETA(DisplayName = "Activate"),
+	PickUpSacrificesForPlay			UMETA(DisplayName = "PickUpSacrificesForPlay"),
+	PickUpSacrificesForEffect		UMETA(DisplayName = "PickUpSacrificesForEffect"),
+	PickUpTargets							UMETA(DisplayName = "PickUpTargets"),
 };
 
 UCLASS(Blueprintable, BlueprintType)

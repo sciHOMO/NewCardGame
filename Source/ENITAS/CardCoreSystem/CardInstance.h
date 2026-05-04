@@ -5,6 +5,7 @@
 
 enum class ECondition : uint8;
 struct FEffectContext;
+class UCardInstance;
 class UEffectInstance;
 class ACardCoreDriver;
 class ACardModel;
@@ -166,4 +167,9 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TMap<ECondition, TSubclassOf<UEffectInstance>> EffectForCondition;	//效果定义
 
+	UFUNCTION(BlueprintNativeEvent)
+	bool ClientValidateHaveSacrifices(const ACardCoreDriver* OuterDriver, const TArray<FCardStruct>& AllSacrificeCards);	//检测是否有合法代价
+
+	UFUNCTION(BlueprintNativeEvent)
+	bool ClientValidatePickUpSacrifices(const ACardCoreDriver* OuterDriver, const TArray<FCardStruct>& PickUpSacrificeCards);	//检测当前已选择的代价
 };

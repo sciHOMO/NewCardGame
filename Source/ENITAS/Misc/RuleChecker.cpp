@@ -12,15 +12,21 @@ bool URuleChecker::CanEndTurn_Client(const ACardCoreDriver* Driver, const int Pl
 	return true;
 }
 
-bool URuleChecker::CanPlayCard_Client(const ACardCoreDriver* Driver, const int PlayerIndex, const FCardStruct& CardStruct, const TArray<int>& Sacrifice)
+bool URuleChecker::CanPlayCard_Client(const ACardCoreDriver* Driver, const int PlayerIndex, const FCardStruct& CardStruct, const TArray< FCardStruct>& Sacrifice)
 {
 	if (Driver -> GamePhase == EPhase::Player_0_Turn && PlayerIndex) return false;
 	if (Driver -> GamePhase == EPhase::Player_1_Turn && !PlayerIndex) return false;
 	if (PlayerIndex != CardStruct.PlayerIndex) return false;
 	if (CardStruct.CardZone != EZone::HandZone && CardStruct.CardZone != EZone::PlaceHolder) return false;
-	if (Sacrifice.Num() < CardStruct.CardLevel) return false;
 
-	return true;
+	{
+		if (!CardStruct.CardInstanceClass) return false;
+
+		UCardInstance* CardCDO = CardStruct.CardInstanceClass -> GetDefaultObject<UCardInstance>();
+		if (!CardCDO) return false;
+		
+		return CardCDO -> ClientValidateHaveSacrifices(Driver, Sacrifice);
+	}
 }
 
 bool URuleChecker::CanAttack_Client(const ACardCoreDriver* Driver, const int PlayerIndex, const FCardStruct& AttackerStruct, const FCardStruct& DefenderStruct)

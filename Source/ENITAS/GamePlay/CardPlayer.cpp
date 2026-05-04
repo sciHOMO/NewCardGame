@@ -155,10 +155,16 @@ void ACardPlayer::SetInputMode(EInputMode NewMode)
 		{
 			break;
 		}
-	case EInputMode::PickUpSacrifices :
+	case EInputMode::PickUpSacrificesForPlay :
 		{
 			MainUMG -> NotifyPickUpSacrifice(FocusActor -> CardStruct.CardLevel);
 			FocusActor -> SetCardState(EState::Hide);
+			break;
+		}
+	case EInputMode::PickUpSacrificesForEffect :
+		{
+			MainUMG -> NotifyPickUpSacrifice(FocusActor -> CardStruct.CardLevel);
+			FocusActor -> SetCardState(EState::Focus);
 			break;
 		}
 	case EInputMode::PickUpTargets :
@@ -198,7 +204,30 @@ void ACardPlayer::LeftMouseButtonClicked()
 			}
 			break;
 		}
-	case EInputMode::PickUpSacrifices :
+	case EInputMode::PickUpSacrificesForPlay :
+		{
+			if (CheckHitResult() && CheckHitResult() != FocusActor &&
+				URuleChecker::IsValidTargetPickUp(Cast<ACardCoreDriver>(GetWorld() ->  GetGameState()), PlayerState -> GetPlayerId(), CheckHitResult() -> CardStruct, {}))
+			{
+				if (!SacrificeMap.Contains(CheckHitResult() -> CardStruct.CardIndex))
+				{
+					if (SacrificeMap.Num() >= FocusActor -> CardStruct.CardLevel)
+					{
+						break;
+					}
+					CheckHitResult() -> SetCardState(EState::Focus);
+					SacrificeMap.Emplace(CheckHitResult() -> CardStruct.CardIndex, CheckHitResult());
+				}
+				else
+				{
+					CheckHitResult() -> SetCardState(EState::Lerp);
+					SacrificeMap.Remove(CheckHitResult() -> CardStruct.CardIndex);
+				}
+				MainUMG -> NotifyPickUpCount(SacrificeMap.Num());
+			}
+			break;
+		}
+	case EInputMode::PickUpSacrificesForEffect :
 		{
 			if (CheckHitResult() && CheckHitResult() != FocusActor &&
 				URuleChecker::IsValidTargetPickUp(Cast<ACardCoreDriver>(GetWorld() ->  GetGameState()), PlayerState -> GetPlayerId(), CheckHitResult() -> CardStruct, {}))
@@ -236,19 +265,22 @@ void ACardPlayer::LeftMouseButtonReleased()
 	{
 	case EInputMode::PlayCard :
 		{
-			if (CheckInsideBoard())
+			TArray<FCardStruct> List;
+			for (ACardModel* Idx : EventListener -> AllCardModels)
+			{
+				List.Emplace(Idx -> CardStruct);
+			}
+			
+			if (CheckInsideBoard() && URuleChecker::CanPlayCard_Client(Cast<ACardCoreDriver>(GetWorld() -> GetGameState()), PlayerState -> GetPlayerId(), FocusActor -> CardStruct, List))
 			{
 				if (FocusActor -> CardStruct.CardLevel == 0)
 				{
-					if (URuleChecker::CanPlayCard_Client(Cast<ACardCoreDriver>(GetWorld() -> GetGameState()), PlayerState -> GetPlayerId(), FocusActor -> CardStruct, {}))
-					{
-						RequestPlayCard(FocusActor -> CardStruct.CardIndex, INT_ERROR, {});
-						SetInputMode(EInputMode::Idle);
-					}
+					RequestPlayCard(FocusActor->CardStruct.CardIndex, INT_ERROR, {});
+					SetInputMode(EInputMode::Idle);
 				}
 				else
 				{
-					SetInputMode(EInputMode::PickUpSacrifices);
+					SetInputMode(EInputMode::PickUpSacrificesForPlay);
 				}
 			}
 			else
@@ -267,10 +299,15 @@ void ACardPlayer::LeftMouseButtonReleased()
 		}
 	case EInputMode::Activate :
 		{
-			SetInputMode(EInputMode::PickUpSacrifices);
+			SetInputMode(EInputMode::PickUpSacrificesForEffect);
 			break;
 		}
-	case EInputMode::PickUpSacrifices :
+	case EInputMode::PickUpSacrificesForPlay :
+		{
+			//添加对象并检测是否完成
+			break;
+		}
+	case EInputMode::PickUpSacrificesForEffect :
 		{
 			//添加对象并检测是否完成
 			break;
@@ -298,7 +335,7 @@ void ACardPlayer::CallBackPickUpSacrifice()
 		List.Emplace(Idx -> CardStruct);
 	}
 
-	if (URuleChecker::CanPlayCard_Client(Cast<ACardCoreDriver>(GetWorld() -> GetGameState()), PlayerState -> GetPlayerId(), FocusActor -> CardStruct, Result))
+	if (URuleChecker::CanPlayCard_Client(Cast<ACardCoreDriver>(GetWorld() -> GetGameState()), PlayerState -> GetPlayerId(), FocusActor -> CardStruct, List))
 	{
 		RequestPlayCard(FocusActor -> CardStruct.CardIndex, INT_ERROR, Result);
 		SetInputMode(EInputMode::Idle);

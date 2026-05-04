@@ -317,7 +317,6 @@ void ACardCoreDriver::OnEnter_Player_0_Turn()
 void ACardCoreDriver::OnQuit_Player_0_Turn()
 {
 	//效果结算
-	SetGamePhase(EPhase::Player_1_Turn);
 }
 
 void ACardCoreDriver::OnEnter_Player_1_Turn()
@@ -335,7 +334,6 @@ void ACardCoreDriver::OnEnter_Player_1_Turn()
 void ACardCoreDriver::OnQuit_Player_1_Turn()
 {
 	//效果结算
-	SetGamePhase(EPhase::Player_0_Turn);
 }
 
 void ACardCoreDriver::OnEnter_GameEnd()

@@ -11,19 +11,20 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c74a718f-9b99-4263-9cf9-fd0684de377e" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Source/ENITAS/Misc/RuleChecker.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.ENITAS/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.ENITAS/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/UMG/BP_PickUpSacrifice.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/UMG/BP_PickUpSacrifice.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ENITAS.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/UMG/BP_GameStart.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/UMG/BP_GameStart.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/UMG/BP_MainUMG.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/UMG/BP_MainUMG.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/UMG/BP_TurnStart.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/UMG/BP_TurnStart.uasset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/ENITAS/CardCoreSystem/CardCoreDriver.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ENITAS/CardCoreSystem/CardCoreDriver.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ENITAS/CardCoreSystem/CardCoreDriver.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ENITAS/CardCoreSystem/CardCoreDriver.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ENITAS/CardCoreSystem/CardInstance.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ENITAS/CardCoreSystem/CardInstance.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ENITAS/CardCoreSystem/CardInstance.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ENITAS/CardCoreSystem/CardInstance.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/ENITAS/CardCoreSystem/EffectInstance.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ENITAS/CardCoreSystem/EffectInstance.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ENITAS/CardCoreSystem/EffectInstance.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ENITAS/CardCoreSystem/EffectInstance.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ENITAS/Client/CardModel.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ENITAS/Client/CardModel.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ENITAS/Client/CardModel.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ENITAS/Client/CardModel.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ENITAS/Client/EventListener.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ENITAS/Client/EventListener.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ENITAS/Client/EventListener.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ENITAS/Client/EventListener.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ENITAS/Client/MainUMG.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ENITAS/Client/MainUMG.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ENITAS/Client/MainUMG.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ENITAS/Client/MainUMG.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/ENITAS/GamePlay/CardPlayer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ENITAS/GamePlay/CardPlayer.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ENITAS/GamePlay/CardPlayer.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ENITAS/GamePlay/CardPlayer.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ENITAS/Misc/RuleChecker.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ENITAS/Misc/RuleChecker.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ENITAS/Misc/RuleChecker.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ENITAS/Misc/RuleChecker.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -104,6 +105,9 @@
     <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
     <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
     <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;customColor&quot;: &quot;&quot;,
@@ -530,7 +534,8 @@
       <workItem from="1777472560556" duration="6199000" />
       <workItem from="1777599145756" duration="100000" />
       <workItem from="1777599386251" duration="4334000" />
-      <workItem from="1777604106749" duration="2158000" />
+      <workItem from="1777604106749" duration="2247000" />
+      <workItem from="1777857079470" duration="3164000" />
     </task>
     <servers />
   </component>

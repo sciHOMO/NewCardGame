@@ -20,7 +20,7 @@ TArray<int> UEffectInstance::GetValidTargets_Implementation()
 
 bool UEffectInstance::ClientValidateActivateSacrifices_Implementation(const ACardCoreDriver* OuterDriver, const TArray<FCardStruct>& SelectedSacrificeCards)
 {
-	(void)OuterDriver;
+	(void)OuterDriver;	//在本地执行
 	(void)SelectedSacrificeCards;
 	return true;
 }

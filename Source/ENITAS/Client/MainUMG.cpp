@@ -19,3 +19,7 @@ void UMainUMG::NotifyPickUpCount_Implementation(const int Num)
 {
 	
 }
+
+void UMainUMG::NotifySacrificeDismissed_Implementation()
+{
+}
