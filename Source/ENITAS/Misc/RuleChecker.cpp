@@ -31,9 +31,12 @@ bool URuleChecker::CanPlayCard_Client(const ACardCoreDriver* Driver, const int P
 
 bool URuleChecker::CanAttackOrActivate_Client(const ACardCoreDriver* Driver, const int PlayerIndex, const FCardStruct& CardStruct)
 {
+	if (!Driver) return false;
+	if (Driver -> GamePhase == EPhase::Player_0_Turn && PlayerIndex) return false;
+	if (Driver -> GamePhase == EPhase::Player_1_Turn && !PlayerIndex) return false;
+	if (PlayerIndex != CardStruct.PlayerIndex) return false;
 	if (CardStruct.CardZone != EZone::BoardZone) return false;
-	if (PlayerIndex == CardStruct.PlayerIndex) return false;
-	
+
 	return true;
 }
 
@@ -78,11 +81,12 @@ bool URuleChecker::CanActivate_Client(const ACardCoreDriver* Driver, const int P
 
 bool URuleChecker::IsValidSacrificeForPlay(const ACardCoreDriver* Driver, const int PlayerIndex,const FCardStruct& CardStruct, const FCardStruct& SacrificeStruct)
 {
-	if (PlayerIndex == CardStruct.PlayerIndex) return false;
-	if (PlayerIndex == SacrificeStruct.PlayerIndex) return false;
-	if (CardStruct.CardZone != EZone::BoardZone) return false;
+	if (PlayerIndex != CardStruct.PlayerIndex) return false;
+	if (PlayerIndex != SacrificeStruct.PlayerIndex) return false;
+	if (CardStruct.CardZone != EZone::HandZone && CardStruct.CardZone != EZone::PlaceHolder) return false;
 	if (SacrificeStruct.CardZone != EZone::HandZone && SacrificeStruct.CardZone != EZone::EchoZone) return false;
-	
+	if (SacrificeStruct.CardIndex == CardStruct.CardIndex) return false;
+
 	{
 		if (!CardStruct.CardInstanceClass) return false;
 
@@ -95,11 +99,12 @@ bool URuleChecker::IsValidSacrificeForPlay(const ACardCoreDriver* Driver, const 
 
 bool URuleChecker::IsValidSacrificeForEffect(const ACardCoreDriver* Driver, const int PlayerIndex,const FCardStruct& CardStruct, const FCardStruct& SacrificeStruct)
 {
-	if (PlayerIndex == CardStruct.PlayerIndex) return false;
-	if (PlayerIndex == SacrificeStruct.PlayerIndex) return false;
+	if (PlayerIndex != CardStruct.PlayerIndex) return false;
+	if (PlayerIndex != SacrificeStruct.PlayerIndex) return false;
 	if (CardStruct.CardZone != EZone::BoardZone) return false;
 	if (SacrificeStruct.CardZone != EZone::HandZone && SacrificeStruct.CardZone != EZone::EchoZone) return false;
-	
+	if (SacrificeStruct.CardIndex == CardStruct.CardIndex) return false;
+
 	{
 		if (!CardStruct.CardInstanceClass) return false;
 		
