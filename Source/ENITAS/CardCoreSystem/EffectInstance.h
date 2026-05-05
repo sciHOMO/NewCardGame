@@ -34,6 +34,9 @@ public:
 	
 	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly)
 	ACardCoreDriver* Driver = nullptr;	//全局信息
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	int EffectLevel = 0;	//效果等级
 	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	int TargetNum = 0;	//目标数量
@@ -49,9 +52,15 @@ public:
 
 	UFUNCTION(BlueprintNativeEvent)
 	TArray<int> GetValidTargets();	//目标筛选器	
+
+	UFUNCTION(BlueprintNativeEvent)
+	bool ClientValidateHaveSacrifices(const ACardCoreDriver* OuterDriver, const TArray<FCardStruct>& AllSacrificeCards);
 	
 	UFUNCTION(BlueprintNativeEvent)
 	bool ClientValidateActivateSacrifices(const ACardCoreDriver* OuterDriver, const TArray<FCardStruct>& SelectedSacrificeCards);
+
+	UFUNCTION(BlueprintNativeEvent)
+	bool ClientValidateFoundSacrifice(const ACardCoreDriver* OuterDriver, const FCardStruct& SacrificeStruct);
 	
 	UFUNCTION()
 	void Activate();	//通过Stack点火开始结算

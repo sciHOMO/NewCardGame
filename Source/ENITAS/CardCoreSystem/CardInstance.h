@@ -168,8 +168,11 @@ public:
 	TMap<ECondition, TSubclassOf<UEffectInstance>> EffectForCondition;	//效果定义
 
 	UFUNCTION(BlueprintNativeEvent)
-	bool ClientValidateHaveSacrifices(const ACardCoreDriver* OuterDriver, const TArray<FCardStruct>& AllSacrificeCards);	//检测是否有合法代价
+	bool ClientValidateHaveSacrifices(const ACardCoreDriver* OuterDriver, const TArray<FCardStruct>& AllSacrificeCards);	//检测是否有合法代价，触发效果时检测
 
 	UFUNCTION(BlueprintNativeEvent)
-	bool ClientValidatePickUpSacrifices(const ACardCoreDriver* OuterDriver, const TArray<FCardStruct>& PickUpSacrificeCards);	//检测当前已选择的代价
+	bool ClientValidatePlaySacrifices(const ACardCoreDriver* OuterDriver, const TArray<FCardStruct>& PickUpSacrificeCards);	//检测当前已选择的代价，每次取对象均检测
+
+	UFUNCTION(BlueprintNativeEvent)
+	bool ClientValidateFoundSacrifice(const ACardCoreDriver* OuterDriver, const FCardStruct& SacrificeStruct);	//单个对象检测
 };

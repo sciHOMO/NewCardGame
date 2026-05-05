@@ -248,9 +248,9 @@ void UEventListener::RefreshZone(EZone Zone, int PlayerIndex)
             {
                 ACardModel* Card = Cards[Idx];
                 const float Y = IsOwner
-                    ? (-350.F + (TCount - 1) * 30.F - Idx * YSpacing)
-                    : (350.F - (TCount - 1) * 30.F + Idx * YSpacing);
-                const float Z = 180.F + Idx * 5.0F;
+                    ? (-350.F - (TCount - 1) * 30.F + Idx * YSpacing)
+                    : (350.F + (TCount - 1) * 30.F - Idx * YSpacing);
+                const float Z = 200.F - Idx * 5.0F;
                 const float X = IsOwner ? -400.F : 500.F;
 
                 Card -> TargetLocation = FVector(X, Y, Z);

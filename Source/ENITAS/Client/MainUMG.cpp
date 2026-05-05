@@ -10,16 +10,13 @@ void UMainUMG::NotifyTurnStart_Implementation(const int PlayerIndex)
 	
 }
 
-void UMainUMG::NotifyPickUpSacrifice_Implementation(const int Level)
+void UMainUMG::NotifyStartPickUpSacrifice_Implementation()
 {
 	
 }
 
-void UMainUMG::NotifyPickUpCount_Implementation(const int Num)
+void UMainUMG::NotifyEndPickUpSacrifice_Implementation()
 {
 	
 }
 
-void UMainUMG::NotifySacrificeDismissed_Implementation()
-{
-}

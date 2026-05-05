@@ -22,12 +22,8 @@ public:
 	void NotifyTurnStart(const int PlayerIndex);
 
 	UFUNCTION(BlueprintNativeEvent)
-	void NotifyPickUpSacrifice(const int Level);
+	void NotifyStartPickUpSacrifice();
 
 	UFUNCTION(BlueprintNativeEvent)
-	void NotifyPickUpCount(const int Num);
-
-	/** 打断献祭/目标选择 UI（校验失败或未选对象时调用）*/
-	UFUNCTION(BlueprintNativeEvent)
-	void NotifySacrificeDismissed();
+	void NotifyEndPickUpSacrifice();
 };

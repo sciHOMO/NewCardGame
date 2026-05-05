@@ -157,13 +157,13 @@ void ACardPlayer::SetInputMode(EInputMode NewMode)
 		}
 	case EInputMode::PickUpSacrificesForPlay :
 		{
-			MainUMG -> NotifyPickUpSacrifice(FocusActor -> CardStruct.CardLevel);
+			MainUMG -> NotifyStartPickUpSacrifice();
 			FocusActor -> SetCardState(EState::Hide);
 			break;
 		}
 	case EInputMode::PickUpSacrificesForEffect :
 		{
-			MainUMG -> NotifyPickUpSacrifice(FocusActor -> CardStruct.CardLevel);
+			MainUMG -> NotifyStartPickUpSacrifice();
 			FocusActor -> SetCardState(EState::Focus);
 			break;
 		}
@@ -178,17 +178,23 @@ void ACardPlayer::SetInputMode(EInputMode NewMode)
 
 void ACardPlayer::LeftMouseButtonClicked()
 {
+	TArray<FCardStruct> List;
+	for (ACardModel* Idx : EventListener -> AllCardModels)
+	{
+		List.Emplace(Idx -> CardStruct);
+	}
+	
 	switch(InputMode)
 	{
 	case EInputMode::Idle :
 		{
 			if (CheckHitResult())
 			{
-				if (CheckHitResult() -> CardStruct.CardZone == EZone::HandZone && CheckHitResult() -> CardStruct.PlayerIndex == PlayerState -> GetPlayerId())
+				if (URuleChecker::CanPlayCard_Client(Cast<ACardCoreDriver>(GetWorld() ->  GetGameState()), PlayerState -> GetPlayerId(), CheckHitResult() -> CardStruct, List))
 				{
 					SetInputMode(EInputMode::PlayCard); break;
 				}
-				if (CheckHitResult() -> CardStruct.CardZone == EZone::BoardZone && CheckHitResult() -> CardStruct.PlayerIndex == PlayerState -> GetPlayerId())
+				if (URuleChecker::CanAttackOrActivate_Client(Cast<ACardCoreDriver>(GetWorld() ->  GetGameState()), PlayerState -> GetPlayerId(), CheckHitResult() -> CardStruct))
 				{
 					SetInputMode(EInputMode::AttackOrActivate); break;
 				}
@@ -197,9 +203,10 @@ void ACardPlayer::LeftMouseButtonClicked()
 		}
 	case EInputMode::AttackOrActivate :
 		{
-			if (CheckHitResult() && CheckHitResult() == FocusActor)
+			if (CheckHitResult() && CheckHitResult() == FocusActor &&
+				URuleChecker::CanActivate_Client(Cast<ACardCoreDriver>(GetWorld() ->  GetGameState()), PlayerState -> GetPlayerId(), CheckHitResult() -> CardStruct, List))
+				//和第一次点击的对象一致，未修改为Attack，且可支付
 			{
-				MainUMG -> NotifyPickUpSacrifice(FocusActor -> CardStruct.CardLevel);	//需要修改
 				SetInputMode(EInputMode::Activate);
 			}
 			break;
@@ -207,14 +214,10 @@ void ACardPlayer::LeftMouseButtonClicked()
 	case EInputMode::PickUpSacrificesForPlay :
 		{
 			if (CheckHitResult() && CheckHitResult() != FocusActor &&
-				URuleChecker::IsValidTargetPickUp(Cast<ACardCoreDriver>(GetWorld() ->  GetGameState()), PlayerState -> GetPlayerId(), CheckHitResult() -> CardStruct, {}))
+				URuleChecker::IsValidSacrificeForPlay(Cast<ACardCoreDriver>(GetWorld() ->  GetGameState()), PlayerState -> GetPlayerId(), FocusActor -> CardStruct, CheckHitResult() -> CardStruct))
 			{
 				if (!SacrificeMap.Contains(CheckHitResult() -> CardStruct.CardIndex))
 				{
-					if (SacrificeMap.Num() >= FocusActor -> CardStruct.CardLevel)
-					{
-						break;
-					}
 					CheckHitResult() -> SetCardState(EState::Focus);
 					SacrificeMap.Emplace(CheckHitResult() -> CardStruct.CardIndex, CheckHitResult());
 				}
@@ -223,21 +226,34 @@ void ACardPlayer::LeftMouseButtonClicked()
 					CheckHitResult() -> SetCardState(EState::Lerp);
 					SacrificeMap.Remove(CheckHitResult() -> CardStruct.CardIndex);
 				}
-				MainUMG -> NotifyPickUpCount(SacrificeMap.Num());
+				
+				TArray<ACardModel*> Entity;
+				TArray<FCardStruct> SList;
+				SacrificeMap.GenerateValueArray(Entity);
+
+				for (ACardModel* Idx : Entity)
+				{
+					SList.Emplace(Idx -> CardStruct);
+				}
+				
+				if (URuleChecker::IsNecessarySacrificesForPlay(Cast<ACardCoreDriver>(GetWorld() ->  GetGameState()), PlayerState -> GetPlayerId(), FocusActor -> CardStruct, SList))	//满足度检查
+				{
+					MainUMG -> NotifyEndPickUpSacrifice();
+				}
+				else
+				{
+					//取消显示选择完成按钮
+				}
 			}
 			break;
 		}
 	case EInputMode::PickUpSacrificesForEffect :
 		{
 			if (CheckHitResult() && CheckHitResult() != FocusActor &&
-				URuleChecker::IsValidTargetPickUp(Cast<ACardCoreDriver>(GetWorld() ->  GetGameState()), PlayerState -> GetPlayerId(), CheckHitResult() -> CardStruct, {}))
-			{
+				URuleChecker::IsValidSacrificeForEffect(Cast<ACardCoreDriver>(GetWorld() ->  GetGameState()), PlayerState -> GetPlayerId(), FocusActor -> CardStruct, CheckHitResult() -> CardStruct))
+		{
 				if (!SacrificeMap.Contains(CheckHitResult() -> CardStruct.CardIndex))
 				{
-					if (SacrificeMap.Num() >= FocusActor -> CardStruct.CardLevel)
-					{
-						break;
-					}
 					CheckHitResult() -> SetCardState(EState::Focus);
 					SacrificeMap.Emplace(CheckHitResult() -> CardStruct.CardIndex, CheckHitResult());
 				}
@@ -246,7 +262,24 @@ void ACardPlayer::LeftMouseButtonClicked()
 					CheckHitResult() -> SetCardState(EState::Lerp);
 					SacrificeMap.Remove(CheckHitResult() -> CardStruct.CardIndex);
 				}
-				MainUMG -> NotifyPickUpCount(SacrificeMap.Num());
+
+				TArray<ACardModel*> Entity;
+				TArray<FCardStruct> SList;
+				SacrificeMap.GenerateValueArray(Entity);
+
+				for (ACardModel* Idx : Entity)
+				{
+					SList.Emplace(Idx -> CardStruct);
+				}
+				
+				if (URuleChecker::IsNecessarySacrificesForEffect(Cast<ACardCoreDriver>(GetWorld() ->  GetGameState()), PlayerState -> GetPlayerId(), FocusActor -> CardStruct, SList))	//满足度检查
+				{
+					MainUMG -> NotifyEndPickUpSacrifice();
+				}
+				else
+				{
+					//取消显示选择完成按钮
+				}
 			}
 			break;
 		}
@@ -265,13 +298,7 @@ void ACardPlayer::LeftMouseButtonReleased()
 	{
 	case EInputMode::PlayCard :
 		{
-			TArray<FCardStruct> List;
-			for (ACardModel* Idx : EventListener -> AllCardModels)
-			{
-				List.Emplace(Idx -> CardStruct);
-			}
-			
-			if (CheckInsideBoard() && URuleChecker::CanPlayCard_Client(Cast<ACardCoreDriver>(GetWorld() -> GetGameState()), PlayerState -> GetPlayerId(), FocusActor -> CardStruct, List))
+			if (CheckInsideBoard())
 			{
 				if (FocusActor -> CardStruct.CardLevel == 0)
 				{
@@ -291,15 +318,16 @@ void ACardPlayer::LeftMouseButtonReleased()
 		}
 	case EInputMode::AttackOrActivate :
 		{
-			if (CheckHitResult() && CheckHitResult() -> CardStruct.CardZone == EZone::BoardZone && FocusActor -> CardStruct.PlayerIndex != PlayerState -> GetPlayerId())
+			if (CheckHitResult() && URuleChecker::CanAttack_Client(Cast<ACardCoreDriver>(GetWorld() -> GetGameState()), PlayerState -> GetPlayerId(),
+				FocusActor -> CardStruct, CheckHitResult() -> CardStruct))
 			{
-				SetInputMode(EInputMode::Attack);
+				SetInputMode(EInputMode::Attack);	//Activate在再次按下后处理
 			}
 			break;
 		}
 	case EInputMode::Activate :
 		{
-			SetInputMode(EInputMode::PickUpSacrificesForEffect);
+			SetInputMode(EInputMode::PickUpSacrificesForEffect);	//若Activate在按下时修改，则必然发生！
 			break;
 		}
 	case EInputMode::PickUpSacrificesForPlay :
@@ -335,17 +363,17 @@ void ACardPlayer::CallBackPickUpSacrifice()
 		List.Emplace(Idx -> CardStruct);
 	}
 
-	if (URuleChecker::CanPlayCard_Client(Cast<ACardCoreDriver>(GetWorld() -> GetGameState()), PlayerState -> GetPlayerId(), FocusActor -> CardStruct, List))
+	if (InputMode == EInputMode::PickUpSacrificesForPlay)
 	{
 		RequestPlayCard(FocusActor -> CardStruct.CardIndex, INT_ERROR, Result);
 		SetInputMode(EInputMode::Idle);
 		return;
 	}
 
-	if (URuleChecker::CanActivate_Client(Cast<ACardCoreDriver>(GetWorld() -> GetGameState()), PlayerState -> GetPlayerId(), FocusActor -> CardStruct, List))	//分别筛选
+	if (InputMode == EInputMode::PickUpSacrificesForEffect)	//分别筛选
 	{
-		//RequestActivate(FocusActor -> CardStruct.CardIndex, Result);
-		//SetInputMode(EInputMode::Idle);
+		RequestActivate(FocusActor -> CardStruct.CardIndex, Result);
+		SetInputMode(EInputMode::Idle);
 		return;
 	}
 }

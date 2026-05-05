@@ -30,13 +30,25 @@ public:
 	static bool CanPlayCard_Client(const ACardCoreDriver* Driver, const int PlayerIndex, const FCardStruct& CardStruct, const TArray<FCardStruct>& Sacrifice);
 
 	UFUNCTION(BlueprintCallable, Category = "RuleChecker|Client")
+	static bool CanAttackOrActivate_Client(const ACardCoreDriver* Driver, const int PlayerIndex, const FCardStruct& CardStruct);
+	
+	UFUNCTION(BlueprintCallable, Category = "RuleChecker|Client")
 	static bool CanAttack_Client(const ACardCoreDriver* Driver, const int PlayerIndex, const FCardStruct& AttackerStruct, const FCardStruct& DefenderStruct);
 
 	UFUNCTION(BlueprintCallable, Category = "RuleChecker|Client")
 	static bool CanActivate_Client(const ACardCoreDriver* Driver, const int PlayerIndex, const FCardStruct& CardStruct, const TArray<FCardStruct>& Sacrifice);
+
+	UFUNCTION(BlueprintCallable, Category = "RuleChecker|Client")
+	static bool IsValidSacrificeForPlay(const ACardCoreDriver* Driver, const int PlayerIndex,const FCardStruct& CardStruct, const FCardStruct& SacrificeStruct);
+
+	UFUNCTION(BlueprintCallable, Category = "RuleChecker|Client")
+	static bool IsValidSacrificeForEffect(const ACardCoreDriver* Driver, const int PlayerIndex,const FCardStruct& CardStruct, const FCardStruct& SacrificeStruct);
 	
 	UFUNCTION(BlueprintCallable, Category = "RuleChecker|Client")
-	static bool IsValidTargetPickUp(const ACardCoreDriver* Driver, const int PlayerIndex, const FCardStruct& CardStruct, const TArray<int>& Sacrifice);
+	static bool IsNecessarySacrificesForPlay(const ACardCoreDriver* Driver, const int PlayerIndex, const FCardStruct& CardStruct, const TArray<FCardStruct>& Sacrifice);
+
+	UFUNCTION(BlueprintCallable, Category = "RuleChecker|Client")
+	static bool IsNecessarySacrificesForEffect(const ACardCoreDriver* Driver, const int PlayerIndex, const FCardStruct& CardStruct, const TArray<FCardStruct>& Sacrifice);
 	//**************************************************************************
 	
 	// --- 原子事件（对应 CardMove / CardAttack / CardActivate 等前置条件）---

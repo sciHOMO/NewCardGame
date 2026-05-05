@@ -29,6 +29,14 @@ bool URuleChecker::CanPlayCard_Client(const ACardCoreDriver* Driver, const int P
 	}
 }
 
+bool URuleChecker::CanAttackOrActivate_Client(const ACardCoreDriver* Driver, const int PlayerIndex, const FCardStruct& CardStruct)
+{
+	if (CardStruct.CardZone != EZone::BoardZone) return false;
+	if (PlayerIndex == CardStruct.PlayerIndex) return false;
+	
+	return true;
+}
+
 bool URuleChecker::CanAttack_Client(const ACardCoreDriver* Driver, const int PlayerIndex, const FCardStruct& AttackerStruct, const FCardStruct& DefenderStruct)
 {
 	if (Driver -> GamePhase == EPhase::Player_0_Turn && PlayerIndex) return false;
@@ -64,17 +72,78 @@ bool URuleChecker::CanActivate_Client(const ACardCoreDriver* Driver, const int P
 		UEffectInstance* EffectCDO = (*EffectClassPtr) -> GetDefaultObject<UEffectInstance>();
 		if (!EffectCDO) return false;
 
-		return EffectCDO -> ClientValidateActivateSacrifices(Driver, Sacrifice);
+		return EffectCDO -> ClientValidateHaveSacrifices(Driver, Sacrifice);
 	}
 }
 
-
-bool URuleChecker::IsValidTargetPickUp(const ACardCoreDriver* Driver, const int PlayerIndex, const FCardStruct& CardStruct, const TArray<int>& Sacrifice)
+bool URuleChecker::IsValidSacrificeForPlay(const ACardCoreDriver* Driver, const int PlayerIndex,const FCardStruct& CardStruct, const FCardStruct& SacrificeStruct)
 {
-	if (PlayerIndex != CardStruct.PlayerIndex) return false;
-	if (CardStruct.CardZone != EZone::HandZone && CardStruct.CardZone != EZone::EchoZone) return false;
+	if (PlayerIndex == CardStruct.PlayerIndex) return false;
+	if (PlayerIndex == SacrificeStruct.PlayerIndex) return false;
+	if (CardStruct.CardZone != EZone::BoardZone) return false;
+	if (SacrificeStruct.CardZone != EZone::HandZone && SacrificeStruct.CardZone != EZone::EchoZone) return false;
 	
-	return true;
+	{
+		if (!CardStruct.CardInstanceClass) return false;
+
+		UCardInstance* CardCDO = CardStruct.CardInstanceClass -> GetDefaultObject<UCardInstance>();
+		if (!CardCDO) return false;
+		
+		return CardCDO -> ClientValidateFoundSacrifice(Driver, SacrificeStruct);
+	}
+}
+
+bool URuleChecker::IsValidSacrificeForEffect(const ACardCoreDriver* Driver, const int PlayerIndex,const FCardStruct& CardStruct, const FCardStruct& SacrificeStruct)
+{
+	if (PlayerIndex == CardStruct.PlayerIndex) return false;
+	if (PlayerIndex == SacrificeStruct.PlayerIndex) return false;
+	if (CardStruct.CardZone != EZone::BoardZone) return false;
+	if (SacrificeStruct.CardZone != EZone::HandZone && SacrificeStruct.CardZone != EZone::EchoZone) return false;
+	
+	{
+		if (!CardStruct.CardInstanceClass) return false;
+		
+		const UCardInstance* CardCDO = CardStruct.CardInstanceClass -> GetDefaultObject<UCardInstance>();
+		if (!CardCDO) return false;
+
+		const TSubclassOf<UEffectInstance>* EffectClassPtr = CardCDO->EffectForCondition.Find(ECondition::Activate);
+		if (!EffectClassPtr || !(*EffectClassPtr)) return false;
+
+		UEffectInstance* EffectCDO = (*EffectClassPtr) -> GetDefaultObject<UEffectInstance>();
+		if (!EffectCDO) return false;
+		
+		return EffectCDO -> ClientValidateFoundSacrifice(Driver, SacrificeStruct);
+	}
+}
+
+bool URuleChecker::IsNecessarySacrificesForPlay(const ACardCoreDriver* Driver, const int PlayerIndex, const FCardStruct& CardStruct, const TArray<FCardStruct>& Sacrifice)
+{
+	{
+		if (!CardStruct.CardInstanceClass) return false;
+
+		UCardInstance* CardCDO = CardStruct.CardInstanceClass -> GetDefaultObject<UCardInstance>();
+		if (!CardCDO) return false;
+		
+		return CardCDO -> ClientValidatePlaySacrifices(Driver, Sacrifice);
+	}
+}
+
+bool URuleChecker::IsNecessarySacrificesForEffect(const ACardCoreDriver* Driver, const int PlayerIndex, const FCardStruct& CardStruct, const TArray<FCardStruct>& Sacrifice)
+{
+	{
+		if (!CardStruct.CardInstanceClass) return false;
+		
+		const UCardInstance* CardCDO = CardStruct.CardInstanceClass -> GetDefaultObject<UCardInstance>();
+		if (!CardCDO) return false;
+
+		const TSubclassOf<UEffectInstance>* EffectClassPtr = CardCDO->EffectForCondition.Find(ECondition::Activate);
+		if (!EffectClassPtr || !(*EffectClassPtr)) return false;
+
+		UEffectInstance* EffectCDO = (*EffectClassPtr) -> GetDefaultObject<UEffectInstance>();
+		if (!EffectCDO) return false;
+		
+		return EffectCDO -> ClientValidateActivateSacrifices(Driver, Sacrifice);
+	}
 }
 //*************************************************************************
 

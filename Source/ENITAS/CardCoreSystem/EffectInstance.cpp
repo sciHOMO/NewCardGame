@@ -18,10 +18,24 @@ TArray<int> UEffectInstance::GetValidTargets_Implementation()
 	return {};	//基于第N个对象的要求返回合法对象列表。蓝图重定义
 }
 
+bool UEffectInstance::ClientValidateHaveSacrifices_Implementation(const ACardCoreDriver* OuterDriver, const TArray<FCardStruct>& AllSacrificeCards)
+{
+	(void)OuterDriver;	
+	(void)AllSacrificeCards;
+	return true;
+}
+
 bool UEffectInstance::ClientValidateActivateSacrifices_Implementation(const ACardCoreDriver* OuterDriver, const TArray<FCardStruct>& SelectedSacrificeCards)
 {
-	(void)OuterDriver;	//在本地执行
+	(void)OuterDriver;	
 	(void)SelectedSacrificeCards;
+	return true;
+}
+
+bool UEffectInstance::ClientValidateFoundSacrifice_Implementation(const ACardCoreDriver* OuterDriver, const FCardStruct& SacrificeStruct)
+{
+	(void)OuterDriver;	
+	(void)SacrificeStruct;
 	return true;
 }
 
