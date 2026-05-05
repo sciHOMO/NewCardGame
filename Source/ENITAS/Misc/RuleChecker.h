@@ -51,6 +51,13 @@ public:
 	static bool IsNecessarySacrificesForEffect(const ACardCoreDriver* Driver, const int PlayerIndex, const FCardStruct& CardStruct, const TArray<FCardStruct>& Sacrifice);
 	//**************************************************************************
 	
+	//****************************服务器校验*******************************
+	UFUNCTION(BlueprintCallable, Category = "RuleChecker|Server")
+	static bool CanEndTurn_Server(const ACardCoreDriver* Driver, const int PlayerIndex);
+
+	UFUNCTION(BlueprintCallable, Category = "RuleChecker|Server")
+	static bool CanPlayCard_Server(const ACardCoreDriver* Driver, const int PlayerIndex, const FCardStruct& CardStruct, const TArray< FCardStruct>& Sacrifice);
+	
 	// --- 原子事件（对应 CardMove / CardAttack / CardActivate 等前置条件）---
 	UFUNCTION(BlueprintCallable, Category = "RuleChecker|Atomic")
 	static bool CanMoveCard(ACardCoreDriver* Driver, UCardInstance* Card, EZone FromZone, EZone ToZone, EReason Reason,

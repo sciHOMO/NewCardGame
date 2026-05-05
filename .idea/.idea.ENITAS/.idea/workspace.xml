@@ -11,7 +11,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c74a718f-9b99-4263-9cf9-fd0684de377e" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.ENITAS/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.ENITAS/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ENITAS/CardCoreSystem/CardCoreDriver.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ENITAS/CardCoreSystem/CardCoreDriver.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ENITAS/Misc/RuleChecker.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ENITAS/Misc/RuleChecker.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ENITAS/Misc/RuleChecker.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ENITAS/Misc/RuleChecker.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -525,6 +527,7 @@
       <workItem from="1777857079470" duration="3767000" />
       <workItem from="1777992103076" duration="3994000" />
       <workItem from="1777996327485" duration="417000" />
+      <workItem from="1778022657456" duration="908000" />
     </task>
     <servers />
   </component>

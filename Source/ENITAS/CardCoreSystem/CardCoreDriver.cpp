@@ -8,6 +8,7 @@
 #include "../Client/EventListener.h"
 #include "../GamePlay/AIPlayer.h"
 #include "../GamePlay/CardPlayer.h"
+#include "ENITAS/Misc/RuleChecker.h"
 #include "Kismet/GameplayStatics.h"
 
 void ACardCoreDriver::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -538,16 +539,22 @@ void ACardCoreDriver::NormalDrawToCount(const int PlayerIndex, const int MaxNum)
 //****************************玩家输入事件****************************
 void ACardCoreDriver::ReceiveEndTurn(const int PlayerIndex)
 {
-	if (GamePhase == (PlayerIndex == 0 ? EPhase::Player_1_Turn : EPhase::Player_0_Turn)) return;	//请求与回合不匹配
-	
-	SetGamePhase( PlayerIndex == 0 ? EPhase::Player_1_Turn : EPhase::Player_0_Turn);
-	
-	SolveStack();
+	if (URuleChecker::CanEndTurn_Server(this, PlayerIndex))
+	{
+		SetGamePhase( PlayerIndex == 0 ? EPhase::Player_1_Turn : EPhase::Player_0_Turn);
+		SolveStack();
+	}
 }
 
 void ACardCoreDriver::ReceivePlayCard(const int PlayerIndex, const int SourceCard, const int TargetCard, const TArray<int>& Sacrifice)	//基于后进先出的顺序，先生成本身的事件，再检测代价
 {
-	if (false) return;
+	TArray<FCardStruct> SacrificeStruct;
+	for (const int Idx : Sacrifice)
+	{
+		SacrificeStruct.Emplace(GetCardInstanceByIndex(Idx) -> CardStruct);
+	}
+	
+	if (!URuleChecker::CanPlayCard_Server(this, PlayerIndex, GetCardInstanceByIndex(TargetCard) -> CardStruct, SacrificeStruct)) return;
 
 	for (const int Idx : Sacrifice)
 	{

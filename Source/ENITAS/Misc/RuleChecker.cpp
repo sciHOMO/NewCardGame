@@ -152,6 +152,47 @@ bool URuleChecker::IsNecessarySacrificesForEffect(const ACardCoreDriver* Driver,
 }
 //*************************************************************************
 
+//****************************服务器校验**********************************
+bool URuleChecker::CanEndTurn_Server(const ACardCoreDriver* Driver, const int PlayerIndex)
+{
+	if (Driver -> GamePhase == EPhase::Player_0_Turn && PlayerIndex) return false;
+	if (Driver -> GamePhase == EPhase::Player_1_Turn && !PlayerIndex) return false;
+
+	return true;
+}
+
+bool URuleChecker::CanPlayCard_Server(const ACardCoreDriver* Driver, const int PlayerIndex, const FCardStruct& CardStruct, const TArray<FCardStruct>& Sacrifice)
+{
+	if (Driver -> GamePhase == EPhase::Player_0_Turn && PlayerIndex) return false;
+	if (Driver -> GamePhase == EPhase::Player_1_Turn && !PlayerIndex) return false;
+	if (PlayerIndex != CardStruct.PlayerIndex) return false;
+	if (CardStruct.CardZone != EZone::HandZone && CardStruct.CardZone != EZone::PlaceHolder) return false;
+
+	for (const FCardStruct Idx : Sacrifice)
+	{
+		if (Idx.PlayerIndex != PlayerIndex)
+		{
+			return false;
+		}
+		if (Idx.CardZone != EZone::HandZone && Idx.CardZone != EZone::EchoZone)
+		{
+			return false;
+		}
+	}
+	
+	{
+		if (!CardStruct.CardInstanceClass) return false;
+
+		UCardInstance* CardCDO = CardStruct.CardInstanceClass -> GetDefaultObject<UCardInstance>();
+		if (!CardCDO) return false;
+		
+		return CardCDO -> ClientValidatePlaySacrifices(Driver, Sacrifice);
+	}
+}
+
+
+//*************************************************************************
+
 bool URuleChecker::CanMoveCard(ACardCoreDriver* Driver, UCardInstance* Card, EZone FromZone, EZone ToZone, EReason Reason,
 	FText& OutFailureReason)
 {
