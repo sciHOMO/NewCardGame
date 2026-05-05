@@ -155,6 +155,7 @@ bool URuleChecker::IsNecessarySacrificesForEffect(const ACardCoreDriver* Driver,
 //****************************服务器校验**********************************
 bool URuleChecker::CanEndTurn_Server(const ACardCoreDriver* Driver, const int PlayerIndex)
 {
+	if (!Driver) return false;
 	if (Driver -> GamePhase == EPhase::Player_0_Turn && PlayerIndex) return false;
 	if (Driver -> GamePhase == EPhase::Player_1_Turn && !PlayerIndex) return false;
 
@@ -163,18 +164,23 @@ bool URuleChecker::CanEndTurn_Server(const ACardCoreDriver* Driver, const int Pl
 
 bool URuleChecker::CanPlayCard_Server(const ACardCoreDriver* Driver, const int PlayerIndex, const FCardStruct& CardStruct, const TArray<FCardStruct>& Sacrifice)
 {
+	if (!Driver) return false;
 	if (Driver -> GamePhase == EPhase::Player_0_Turn && PlayerIndex) return false;
 	if (Driver -> GamePhase == EPhase::Player_1_Turn && !PlayerIndex) return false;
 	if (PlayerIndex != CardStruct.PlayerIndex) return false;
 	if (CardStruct.CardZone != EZone::HandZone && CardStruct.CardZone != EZone::PlaceHolder) return false;
 
-	for (const FCardStruct Idx : Sacrifice)
+	for (const FCardStruct& Idx : Sacrifice)
 	{
 		if (Idx.PlayerIndex != PlayerIndex)
 		{
 			return false;
 		}
 		if (Idx.CardZone != EZone::HandZone && Idx.CardZone != EZone::EchoZone)
+		{
+			return false;
+		}
+		if (Idx.CardIndex == CardStruct.CardIndex)
 		{
 			return false;
 		}

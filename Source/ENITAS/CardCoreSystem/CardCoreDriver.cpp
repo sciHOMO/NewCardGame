@@ -548,13 +548,25 @@ void ACardCoreDriver::ReceiveEndTurn(const int PlayerIndex)
 
 void ACardCoreDriver::ReceivePlayCard(const int PlayerIndex, const int SourceCard, const int TargetCard, const TArray<int>& Sacrifice)	//基于后进先出的顺序，先生成本身的事件，再检测代价
 {
+	UCardInstance* const SourceInstance = GetCardInstanceByIndex(SourceCard);
+	if (!SourceInstance) return;
+
 	TArray<FCardStruct> SacrificeStruct;
+	SacrificeStruct.Reserve(Sacrifice.Num());
 	for (const int Idx : Sacrifice)
 	{
-		SacrificeStruct.Emplace(GetCardInstanceByIndex(Idx) -> CardStruct);
+		if (UCardInstance* const SacInstance = GetCardInstanceByIndex(Idx))
+		{
+			SacrificeStruct.Emplace(SacInstance -> CardStruct);
+		}
+		else
+		{
+			return;
+		}
 	}
-	
-	if (!URuleChecker::CanPlayCard_Server(this, PlayerIndex, GetCardInstanceByIndex(TargetCard) -> CardStruct, SacrificeStruct)) return;
+
+	// 打出校验必须以「手牌/场上的源卡」SourceCard 为准；TargetCard 常为落点或 INT_ERROR，不可用于规则里的打出卡结构体。
+	if (!URuleChecker::CanPlayCard_Server(this, PlayerIndex, SourceInstance -> CardStruct, SacrificeStruct)) return;
 
 	for (const int Idx : Sacrifice)
 	{
