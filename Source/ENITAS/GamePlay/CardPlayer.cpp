@@ -8,6 +8,8 @@
 #include "../Client/MainUMG.h"
 #include "../Misc/MiscFunctionLibrary.h"
 #include "Blueprint/UserWidget.h"
+#include "ENITAS/CardCoreSystem/EffectContext.h"
+#include "ENITAS/CardCoreSystem/EffectInstance.h"
 #include "ENITAS/Misc/RuleChecker.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -157,13 +159,24 @@ void ACardPlayer::SetInputMode(EInputMode NewMode)
 		}
 	case EInputMode::PickUpSacrificesForPlay :
 		{
-			MainUMG -> NotifyStartPickUpSacrifice();
+			MainUMG -> NotifyStartPickUpSacrifice(FocusActor -> CardStruct.CardSacrifice);
 			FocusActor -> SetCardState(EState::Hide);
 			break;
 		}
 	case EInputMode::PickUpSacrificesForEffect :
 		{
-			MainUMG -> NotifyStartPickUpSacrifice();
+			if (!FocusActor -> CardStruct.CardInstanceClass) return;
+		
+			const UCardInstance* CardCDO = FocusActor -> CardStruct.CardInstanceClass -> GetDefaultObject<UCardInstance>();
+			if (!CardCDO) return;
+
+			const TSubclassOf<UEffectInstance>* EffectClassPtr = CardCDO->EffectForCondition.Find(ECondition::Activate);
+			if (!EffectClassPtr || !(*EffectClassPtr)) return;
+
+			const UEffectInstance* EffectCDO = (*EffectClassPtr) -> GetDefaultObject<UEffectInstance>();
+			if (!EffectCDO) return;
+			
+			MainUMG -> NotifyStartPickUpSacrifice(EffectCDO -> EffectSacrifice);
 			FocusActor -> SetCardState(EState::Focus);
 			break;
 		}
@@ -238,11 +251,11 @@ void ACardPlayer::LeftMouseButtonClicked()
 				
 				if (URuleChecker::IsNecessarySacrificesForPlay(Cast<ACardCoreDriver>(GetWorld() ->  GetGameState()), PlayerState -> GetPlayerId(), FocusActor -> CardStruct, SList))	//满足度检查
 				{
-					MainUMG -> NotifyEndPickUpSacrifice();
+					MainUMG -> NotifyEndPickUpSacrifice(true);
 				}
 				else
 				{
-					//取消显示选择完成按钮
+					MainUMG -> NotifyEndPickUpSacrifice(false);
 				}
 			}
 			break;
@@ -274,11 +287,11 @@ void ACardPlayer::LeftMouseButtonClicked()
 				
 				if (URuleChecker::IsNecessarySacrificesForEffect(Cast<ACardCoreDriver>(GetWorld() ->  GetGameState()), PlayerState -> GetPlayerId(), FocusActor -> CardStruct, SList))	//满足度检查
 				{
-					MainUMG -> NotifyEndPickUpSacrifice();
+					MainUMG -> NotifyEndPickUpSacrifice(true);
 				}
 				else
 				{
-					//取消显示选择完成按钮
+					MainUMG -> NotifyEndPickUpSacrifice(false);
 				}
 			}
 			break;

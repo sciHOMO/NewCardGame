@@ -27,8 +27,7 @@ bool UEffectInstance::ClientValidateHaveSacrifices_Implementation(const ACardCor
 
 bool UEffectInstance::ClientValidateActivateSacrifices_Implementation(const ACardCoreDriver* OuterDriver, const TArray<FCardStruct>& SelectedSacrificeCards)
 {
-	(void)OuterDriver;	
-	(void)SelectedSacrificeCards;
+	if (SelectedSacrificeCards.Num() != EffectLevel) return false;
 	return true;
 }
 

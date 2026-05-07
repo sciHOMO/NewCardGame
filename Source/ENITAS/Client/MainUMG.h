@@ -22,8 +22,8 @@ public:
 	void NotifyTurnStart(const int PlayerIndex);
 
 	UFUNCTION(BlueprintNativeEvent)
-	void NotifyStartPickUpSacrifice();
+	void NotifyStartPickUpSacrifice(const FString& Text);
 
 	UFUNCTION(BlueprintNativeEvent)
-	void NotifyEndPickUpSacrifice();
+	void NotifyEndPickUpSacrifice(const bool ShouldEnd);
 };

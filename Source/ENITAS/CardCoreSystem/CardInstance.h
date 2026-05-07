@@ -119,6 +119,9 @@ struct FCardStruct : public FTableRowBase
 	FName CardName = TEXT("Name");
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	FString CardSacrifice = TEXT("选择一个对象");	
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	int CardLevel = 0;
 	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)

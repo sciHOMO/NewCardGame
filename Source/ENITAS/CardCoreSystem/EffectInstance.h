@@ -37,6 +37,9 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	int EffectLevel = 0;	//效果等级
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	FString EffectSacrifice = TEXT("选择一个对象");	//代价说明
 	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	int TargetNum = 0;	//目标数量

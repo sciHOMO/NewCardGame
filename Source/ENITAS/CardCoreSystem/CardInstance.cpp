@@ -7,6 +7,7 @@ bool UCardInstance::ClientValidateHaveSacrifices_Implementation(const ACardCoreD
 
 bool UCardInstance::ClientValidatePlaySacrifices_Implementation(const ACardCoreDriver* OuterDriver, const TArray<FCardStruct>& PickUpSacrificeCards)
 {
+	if (PickUpSacrificeCards.Num() != CardStruct . CardLevel) return false;
 	return true;
 }
 
