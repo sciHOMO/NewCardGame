@@ -15,17 +15,17 @@ UENUM(BlueprintType)
 enum class ECondition : uint8
 {
 	PlaceHolder					UMETA(DisplayName = "PlaceHolder"),
-	Activate							UMETA(DisplayName = "Activate"),
-	BattleCry							UMETA(DisplayName = "BattleCry"),
-	DeathRattle						UMETA(DisplayName = "DeathRattle"),
-	CastSpell							UMETA(DisplayName = "CastSpell"),
-	OnSummonServant			UMETA(DisplayName = "OnSummonServant"),
+	Activate					UMETA(DisplayName = "Activate"),
+	BattleCry					UMETA(DisplayName = "BattleCry"),
+	DeathRattle					UMETA(DisplayName = "DeathRattle"),
+	CastSpell					UMETA(DisplayName = "CastSpell"),
+	OnSummonServant				UMETA(DisplayName = "OnSummonServant"),
 	OnCastSpell					UMETA(DisplayName = "OnCastSpell"),
 	OnBuildTerrain				UMETA(DisplayName = "OnBuildTerrain"),
 	OnAttachEquip				UMETA(DisplayName = "OnAttachEquip"),
-	OnSacrificed					UMETA(DisplayName = "OnSacrificed"),
-	OnActivate						UMETA(DisplayName = "OnActivate"),
-	OnBattleCry						UMETA(DisplayName = "OnBattleCry"),
+	OnSacrificed				UMETA(DisplayName = "OnSacrificed"),
+	OnActivate					UMETA(DisplayName = "OnActivate"),
+	OnBattleCry					UMETA(DisplayName = "OnBattleCry"),
 	OnDeathRattle				UMETA(DisplayName = "OnDeathRattle"),
 
 };
@@ -44,7 +44,6 @@ public:
 	UCardInstance* PrePickUp;
 };
 
-// [待核对] 祭品实例数组属性曾用名 Sacrifice；若蓝图/数据资产仍引用旧属性名，需改为 SacInstanceArray（同下 BattleCry / CastSpell 上下文）。
 UCLASS()
 class UEffectContextForActivate : public UEffectContext
 {

@@ -441,7 +441,6 @@ bool URuleChecker::CanPaySacrificeCost(ACardCoreDriver* Driver, int SacIndex, in
 	return true;
 }
 
-// [待核对] RelativeCardIndex 为 INT_ERROR 或无实例时整段判假；若设计允许「无关联牌」的法术结算，应放宽此条件。
 bool URuleChecker::CanTryMoveSpellToEchoOrGrave(ACardCoreDriver* Driver, int SourceCardIndex, int RelativeCardIndex)
 {
 	if (!Driver) return false;
@@ -451,8 +450,6 @@ bool URuleChecker::CanTryMoveSpellToEchoOrGrave(ACardCoreDriver* Driver, int Sou
 	if (Source -> CardStruct.CardType != EType::Spell) return false;
 	if (Source -> CardStruct.CardZone != EZone::HandZone) return false;
 
-	if (RelativeCardIndex == INT_ERROR || !Driver -> GetCardInstanceByIndex(RelativeCardIndex)) return false;
-	
 	return true;
 }
 

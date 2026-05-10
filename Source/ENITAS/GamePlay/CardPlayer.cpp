@@ -191,7 +191,6 @@ void ACardPlayer::SetInputMode(EInputMode NewMode)
 
 void ACardPlayer::LeftMouseButtonClicked()
 {
-	// [待核对] List 为当前 AllCardModels 的全量 FCardStruct 快照，并非祭品 SacStructArray；却传入 CanPlayCard_Client / CanActivate_Client 的「代价数组」形参，语义易混，请确认客户端预检是否与服务器一致。
 	TArray<FCardStruct> List;
 	for (ACardModel* Idx : EventListener -> AllCardModels)
 	{
@@ -204,11 +203,11 @@ void ACardPlayer::LeftMouseButtonClicked()
 		{
 			if (CheckHitResult())
 			{
-				if (URuleChecker::CanPlayCard_Client(Cast<ACardCoreDriver>(GetWorld() ->  GetGameState()), PlayerState -> GetPlayerId(), CheckHitResult() -> CardStruct, List))
+				if (URuleChecker::CanPlayCard_Client(Cast<ACardCoreDriver>(GetWorld() -> GetGameState()), PlayerState -> GetPlayerId(), CheckHitResult() -> CardStruct, List))
 				{
 					SetInputMode(EInputMode::PlayCard); break;
 				}
-				if (URuleChecker::CanAttackOrActivate_Client(Cast<ACardCoreDriver>(GetWorld() ->  GetGameState()), PlayerState -> GetPlayerId(), CheckHitResult() -> CardStruct))
+				if (URuleChecker::CanAttackOrActivate_Client(Cast<ACardCoreDriver>(GetWorld() -> GetGameState()), PlayerState -> GetPlayerId(), CheckHitResult() -> CardStruct))
 				{
 					SetInputMode(EInputMode::AttackOrActivate); break;
 				}
@@ -387,7 +386,6 @@ void ACardPlayer::LeftMouseButtonReleased()
 	}
 }
 
-// [待核对] 仅把 SacIndexArray 发往服务器；此处曾构造未使用的 FCardStruct 列表已删除。请确认 ReceivePlayCard/ReceiveActivate 侧仅依赖索引是否足够、是否与规则校验一致。
 void ACardPlayer::CallBackPickUpSacrifice()
 {
 	TArray<int> SacIndexArray;
