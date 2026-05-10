@@ -484,7 +484,7 @@ void ACardCoreDriver::CardApplyHeal(UCardInstance* SourceCardInstance, UCardInst
 	
 }
 
-void ACardCoreDriver::CardActivate(UCardInstance* CardInstance, TArray<UCardInstance*> Sacrifice, EReason Reason)
+void ACardCoreDriver::CardActivate(UCardInstance* CardInstance, TArray<UCardInstance*> SacInstanceArray, EReason Reason)
 {
 	if (!CardInstance) return;
 	
@@ -547,17 +547,17 @@ void ACardCoreDriver::ReceiveEndTurn(const int PlayerIndex)
 	}
 }
 
-void ACardCoreDriver::ReceivePlayCard(const int PlayerIndex, const int SourceCard, const int TargetCard, const TArray<int>& Sacrifice)	//基于后进先出的顺序，先生成本身的事件，再检测代价
+void ACardCoreDriver::ReceivePlayCard(const int PlayerIndex, const int SourceCard, const int TargetCard, const TArray<int>& SacIndexArray)	//基于后进先出的顺序，先生成本身的事件，再检测代价
 {
 	const UCardInstance* const SourceInstance = GetCardInstanceByIndex(SourceCard);
 	if (!SourceInstance) return;
 
-	TArray<FCardStruct> SacrificeStruct;
-	for (const int Idx : Sacrifice)
+	TArray<FCardStruct> SacStructArray;
+	for (const int SacIndex : SacIndexArray)
 	{
-		if (UCardInstance* const SacInstance = GetCardInstanceByIndex(Idx))
+		if (UCardInstance* const SacInstance = GetCardInstanceByIndex(SacIndex))
 		{
-			SacrificeStruct.Emplace(SacInstance -> CardStruct);
+			SacStructArray.Emplace(SacInstance -> CardStruct);
 		}
 		else
 		{
@@ -565,25 +565,25 @@ void ACardCoreDriver::ReceivePlayCard(const int PlayerIndex, const int SourceCar
 		}
 	}
 	
-	if (!URuleChecker::CanPlayCard_Server(this, PlayerIndex, SourceInstance -> CardStruct, SacrificeStruct)) return;
+	if (!URuleChecker::CanPlayCard_Server(this, PlayerIndex, SourceInstance -> CardStruct, SacStructArray)) return;
 
-	for (const int Idx : Sacrifice)
+	for (const int SacIndex : SacIndexArray)
 	{
-		PayCostAsSacrificeForMove(Idx, SourceCard);
+		PayCostAsSacrificeForMove(SacIndex, SourceCard);
 	}
 	
 	switch(GetCardInstanceByIndex(SourceCard) -> CardStruct.CardType)
 	{
-		case EType::Servant : SummonServant(SourceCard, TargetCard, Sacrifice); break;
-		case EType::Spell : CastSpell(SourceCard, TargetCard, Sacrifice); break;
-		case EType::Terrain : BuildTerrain(SourceCard, TargetCard, Sacrifice); break;
-		case EType::Equip :	AttachEquip(SourceCard, TargetCard, Sacrifice); break;
+		case EType::Servant : SummonServant(SourceCard, TargetCard, SacIndexArray); break;
+		case EType::Spell : CastSpell(SourceCard, TargetCard, SacIndexArray); break;
+		case EType::Terrain : BuildTerrain(SourceCard, TargetCard, SacIndexArray); break;
+		case EType::Equip :	AttachEquip(SourceCard, TargetCard, SacIndexArray); break;
 		default	: break;
 	}
 	
-	for (const int Idx : Sacrifice)
+	for (const int SacIndex : SacIndexArray)
 	{
-		PayCostAsSacrificeForEffect(Idx, SourceCard);
+		PayCostAsSacrificeForEffect(SacIndex, SourceCard);
 	}
 	
 	SolveStack();
@@ -603,17 +603,17 @@ void ACardCoreDriver::ReceiveAttack(const int PlayerIndex, const int SourceCard,
 	SolveStack();
 }
 
-void ACardCoreDriver::ReceiveActivate(const int PlayerIndex, const int SourceCard, const TArray<int>& Sacrifice)	//这些效果遵循后进先出。
+void ACardCoreDriver::ReceiveActivate(const int PlayerIndex, const int SourceCard, const TArray<int>& SacIndexArray)	//这些效果遵循后进先出。
 {
 	const UCardInstance* const SourceInstance = GetCardInstanceByIndex(SourceCard);
 	if (!SourceInstance) return;
 
-	TArray<FCardStruct> SacrificeStruct;
-	for (const int Idx : Sacrifice)
+	TArray<FCardStruct> SacStructArray;
+	for (const int SacIndex : SacIndexArray)
 	{
-		if (UCardInstance* const SacInstance = GetCardInstanceByIndex(Idx))
+		if (UCardInstance* const SacInstance = GetCardInstanceByIndex(SacIndex))
 		{
-			SacrificeStruct.Emplace(SacInstance -> CardStruct);
+			SacStructArray.Emplace(SacInstance -> CardStruct);
 		}
 		else
 		{
@@ -621,20 +621,20 @@ void ACardCoreDriver::ReceiveActivate(const int PlayerIndex, const int SourceCar
 		}
 	}
 
-	if (!URuleChecker::CanActivate_Server(this, PlayerIndex, SourceInstance -> CardStruct, SacrificeStruct)) return;
+	if (!URuleChecker::CanActivate_Server(this, PlayerIndex, SourceInstance -> CardStruct, SacStructArray)) return;
 
-	TArray<UCardInstance*> SacrificeCardInstances = {};
-	for (const int Idx : Sacrifice)
+	TArray<UCardInstance*> SacInstanceArray = {};
+	for (const int SacIndex : SacIndexArray)
 	{
-		SacrificeCardInstances.Emplace(GetCardInstanceByIndex(Idx));
+		SacInstanceArray.Emplace(GetCardInstanceByIndex(SacIndex));
 	}
 
-	for (const int Idx : Sacrifice)
+	for (const int SacIndex : SacIndexArray)
 	{
-		PayCostAsSacrificeForMove(Idx, SourceCard);
+		PayCostAsSacrificeForMove(SacIndex, SourceCard);
 	}
 	
-	CardActivate(GetCardInstanceByIndex(SourceCard), SacrificeCardInstances, EReason::PlaceHolder);
+	CardActivate(GetCardInstanceByIndex(SourceCard), SacInstanceArray, EReason::PlaceHolder);
 	
 	UEffectContextForOnActivate* MulticastContext = NewObject<UEffectContextForOnActivate>(GetWorld());
 	MulticastContext -> Condition = ECondition::OnActivate;
@@ -643,12 +643,12 @@ void ACardCoreDriver::ReceiveActivate(const int PlayerIndex, const int SourceCar
 
 	UEffectContextForActivate* NewContext = NewObject<UEffectContextForActivate>(GetWorld());
 	NewContext -> Condition = ECondition::Activate;
-	NewContext -> Sacrifice = SacrificeCardInstances;
+	NewContext -> SacInstanceArray = SacInstanceArray;
 	CreateNewEffectForCondition(GetCardInstanceByIndex(SourceCard), NewContext);
 	
-	for (const int Idx : Sacrifice)
+	for (const int SacIndex : SacIndexArray)
 	{
-		PayCostAsSacrificeForEffect(Idx, SourceCard);
+		PayCostAsSacrificeForEffect(SacIndex, SourceCard);
 	}
 
 	SolveStack();
@@ -664,7 +664,7 @@ void ACardCoreDriver::ReceiveTarget(const int PlayerIndex, const int PickedTarge
 
 
 //*****************************解释性事件*******************************
-void ACardCoreDriver::SummonServant(const int SourceCard, const int TargetCard, const TArray<int>& Sacrifice)
+void ACardCoreDriver::SummonServant(const int SourceCard, const int TargetCard, const TArray<int>& SacIndexArray)
 {
 	if (!GetCardInstanceByIndex(SourceCard)) return;
 	
@@ -677,17 +677,17 @@ void ACardCoreDriver::SummonServant(const int SourceCard, const int TargetCard, 
 	
 	UEffectContextForBattleCry* NewContext = NewObject<UEffectContextForBattleCry>(GetWorld());
 	NewContext -> Condition = ECondition::BattleCry;
-	TArray<UCardInstance*> SacrificeCardInstances = {};
-	for (const int Idx : Sacrifice)
+	TArray<UCardInstance*> SacInstanceArray = {};
+	for (const int SacIndex : SacIndexArray)
 	{
-		SacrificeCardInstances.Emplace(GetCardInstanceByIndex(Idx));
+		SacInstanceArray.Emplace(GetCardInstanceByIndex(SacIndex));
 	}
 	NewContext ->  PrePickUp = GetCardInstanceByIndex(TargetCard);
-	NewContext -> Sacrifice = SacrificeCardInstances;
+	NewContext -> SacInstanceArray = SacInstanceArray;
 	CreateNewEffectForCondition(GetCardInstanceByIndex(SourceCard), NewContext);
 }
 
-void ACardCoreDriver::CastSpell(const int SourceCard, const int TargetCard, const TArray<int>& Sacrifice)
+void ACardCoreDriver::CastSpell(const int SourceCard, const int TargetCard, const TArray<int>& SacIndexArray)
 {
 	if (!GetCardInstanceByIndex(SourceCard)) return;
 	
@@ -700,17 +700,17 @@ void ACardCoreDriver::CastSpell(const int SourceCard, const int TargetCard, cons
 	
 	UEffectContextForCastSpell* NewContext = NewObject<UEffectContextForCastSpell>(GetWorld());
 	NewContext -> Condition = ECondition::CastSpell;
-	TArray<UCardInstance*> SacrificeCardInstances = {};
-	for (const int Idx : Sacrifice)
+	TArray<UCardInstance*> SacInstanceArray = {};
+	for (const int SacIndex : SacIndexArray)
 	{
-		SacrificeCardInstances.Emplace(GetCardInstanceByIndex(Idx));
+		SacInstanceArray.Emplace(GetCardInstanceByIndex(SacIndex));
 	}
 	NewContext ->  PrePickUp = GetCardInstanceByIndex(TargetCard);
-	NewContext -> Sacrifice = SacrificeCardInstances;
+	NewContext -> SacInstanceArray = SacInstanceArray;
 	CreateNewEffectForCondition(GetCardInstanceByIndex(SourceCard), NewContext);
 }
 
-void ACardCoreDriver::BuildTerrain(const int SourceCard, const int TargetCard, const TArray<int>& Sacrifice)
+void ACardCoreDriver::BuildTerrain(const int SourceCard, const int TargetCard, const TArray<int>& SacIndexArray)
 {
 	if (!GetCardInstanceByIndex(SourceCard)) return;
 	
@@ -723,17 +723,17 @@ void ACardCoreDriver::BuildTerrain(const int SourceCard, const int TargetCard, c
 	
 	UEffectContextForBattleCry* NewContext = NewObject<UEffectContextForBattleCry>(GetWorld());
 	NewContext -> Condition = ECondition::BattleCry;
-	TArray<UCardInstance*> SacrificeCardInstances = {};
-	for (const int Idx : Sacrifice)
+	TArray<UCardInstance*> SacInstanceArray = {};
+	for (const int SacIndex : SacIndexArray)
 	{
-		SacrificeCardInstances.Emplace(GetCardInstanceByIndex(Idx));
+		SacInstanceArray.Emplace(GetCardInstanceByIndex(SacIndex));
 	}
 	NewContext ->  PrePickUp = GetCardInstanceByIndex(TargetCard);
-	NewContext -> Sacrifice = SacrificeCardInstances;
+	NewContext -> SacInstanceArray = SacInstanceArray;
 	CreateNewEffectForCondition(GetCardInstanceByIndex(SourceCard), NewContext);
 }
 
-void ACardCoreDriver::AttachEquip(const int SourceCard, const int TargetCard, const TArray<int>& Sacrifice)
+void ACardCoreDriver::AttachEquip(const int SourceCard, const int TargetCard, const TArray<int>& SacIndexArray)
 {
 	if (!GetCardInstanceByIndex(SourceCard)) return;
 	
@@ -747,33 +747,33 @@ void ACardCoreDriver::AttachEquip(const int SourceCard, const int TargetCard, co
 	
 	UEffectContextForBattleCry* NewContext = NewObject<UEffectContextForBattleCry>(GetWorld());
 	NewContext -> Condition = ECondition::BattleCry;
-	TArray<UCardInstance*> SacrificeCardInstances = {};
-	for (const int Idx : Sacrifice)
+	TArray<UCardInstance*> SacInstanceArray = {};
+	for (const int SacIndex : SacIndexArray)
 	{
-		SacrificeCardInstances.Emplace(GetCardInstanceByIndex(Idx));
+		SacInstanceArray.Emplace(GetCardInstanceByIndex(SacIndex));
 	}
 	NewContext ->  PrePickUp = GetCardInstanceByIndex(TargetCard);
-	NewContext -> Sacrifice = SacrificeCardInstances;
+	NewContext -> SacInstanceArray = SacInstanceArray;
 	CreateNewEffectForCondition(GetCardInstanceByIndex(SourceCard), NewContext);
 }
 
-void ACardCoreDriver::PayCostAsSacrificeForMove(const int SourceCard, const int RelativeCard)
+void ACardCoreDriver::PayCostAsSacrificeForMove(const int SacIndex, const int RelativeCardIndex)
 {
-	if (!GetCardInstanceByIndex(SourceCard)) return;
-	if (!GetCardInstanceByIndex(RelativeCard)) return;
+	if (!GetCardInstanceByIndex(SacIndex)) return;
+	if (!GetCardInstanceByIndex(RelativeCardIndex)) return;
 	
-	CardMove(GetCardInstanceByIndex(SourceCard), GetCardInstanceByIndex(SourceCard) -> CardStruct.CardZone, EZone::GraveZone, EReason::Sacrifice);
+	CardMove(GetCardInstanceByIndex(SacIndex), GetCardInstanceByIndex(SacIndex) -> CardStruct.CardZone, EZone::GraveZone, EReason::Sacrifice);
 }
 
-void ACardCoreDriver::PayCostAsSacrificeForEffect(const int SourceCard, const int RelativeCard)
+void ACardCoreDriver::PayCostAsSacrificeForEffect(const int SacIndex, const int RelativeCardIndex)
 {
-	if (!GetCardInstanceByIndex(SourceCard)) return;
-	if (!GetCardInstanceByIndex(RelativeCard)) return;
+	if (!GetCardInstanceByIndex(SacIndex)) return;
+	if (!GetCardInstanceByIndex(RelativeCardIndex)) return;
 
 	UEffectContextForOnSacrificed* NewContext = NewObject<UEffectContextForOnSacrificed>(GetWorld());
 	NewContext -> Condition = ECondition::OnSacrificed;
-	NewContext ->  RelativeCard = GetCardInstanceByIndex(RelativeCard);
-	CreateNewEffectForCondition(GetCardInstanceByIndex(SourceCard), NewContext);
+	NewContext ->  RelativeCard = GetCardInstanceByIndex(RelativeCardIndex);
+	CreateNewEffectForCondition(GetCardInstanceByIndex(SacIndex), NewContext);
 }
 
 void ACardCoreDriver::TryMoveToEcho(const int SourceCard, const int RelativeCard)

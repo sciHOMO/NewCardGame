@@ -18,25 +18,25 @@ TArray<int> UEffectInstance::GetValidTargets_Implementation()
 	return {};	//基于第N个对象的要求返回合法对象列表。蓝图重定义
 }
 
-bool UEffectInstance::ClientValidateHaveSacrifices_Implementation(const ACardCoreDriver* OuterDriver, const FCardStruct& SourceCardStruct, const TArray<FCardStruct>& AllSacrificeCards)
+bool UEffectInstance::ClientValidateHaveSacrifices_Implementation(const ACardCoreDriver* OuterDriver, const FCardStruct& SourceCardStruct, const TArray<FCardStruct>& SacStructArray)
 {
-	if (AllSacrificeCards.Num() < SourceCardStruct.CardLevel) return false;
+	if (SacStructArray.Num() < SourceCardStruct.CardLevel) return false;
 	return true;
 }
 
-bool UEffectInstance::ClientValidateActivateSacrifices_Implementation(const ACardCoreDriver* OuterDriver, const FCardStruct& SourceCardStruct, const TArray<FCardStruct>& PickUpSacrificeCards)
+bool UEffectInstance::ClientValidateActivateSacrifices_Implementation(const ACardCoreDriver* OuterDriver, const FCardStruct& SourceCardStruct, const TArray<FCardStruct>& SacStructArray)
 {
 	(void)OuterDriver;
 	(void)SourceCardStruct;
-	if (PickUpSacrificeCards.Num() != EffectLevel) return false;
+	if (SacStructArray.Num() != EffectLevel) return false;
 	return true;
 }
 
-bool UEffectInstance::ClientValidateFoundSacrifice_Implementation(const ACardCoreDriver* OuterDriver, const FCardStruct& SourceCardStruct, const FCardStruct& SacrificeStruct)
+bool UEffectInstance::ClientValidateFoundSacrifice_Implementation(const ACardCoreDriver* OuterDriver, const FCardStruct& SourceCardStruct, const FCardStruct& SacStruct)
 {
 	(void)OuterDriver;
 	(void)SourceCardStruct;
-	(void)SacrificeStruct;
+	(void)SacStruct;
 	return true;
 }
 

@@ -26,7 +26,7 @@ public:
 	static bool CanEndTurn_Client(const ACardCoreDriver* Driver, const int PlayerIndex);
 
 	UFUNCTION(BlueprintCallable, Category = "RuleChecker|Client")
-	static bool CanPlayCard_Client(const ACardCoreDriver* Driver, const int PlayerIndex, const FCardStruct& CardStruct, const TArray<FCardStruct>& Sacrifice);
+	static bool CanPlayCard_Client(const ACardCoreDriver* Driver, const int PlayerIndex, const FCardStruct& CardStruct, const TArray<FCardStruct>& SacStructArray);
 
 	UFUNCTION(BlueprintCallable, Category = "RuleChecker|Client")
 	static bool CanAttackOrActivate_Client(const ACardCoreDriver* Driver, const int PlayerIndex, const FCardStruct& CardStruct);
@@ -35,19 +35,19 @@ public:
 	static bool CanAttack_Client(const ACardCoreDriver* Driver, const int PlayerIndex, const FCardStruct& AttackerStruct, const FCardStruct& DefenderStruct);
 
 	UFUNCTION(BlueprintCallable, Category = "RuleChecker|Client")
-	static bool CanActivate_Client(const ACardCoreDriver* Driver, const int PlayerIndex, const FCardStruct& CardStruct, const TArray<FCardStruct>& Sacrifice);
+	static bool CanActivate_Client(const ACardCoreDriver* Driver, const int PlayerIndex, const FCardStruct& CardStruct, const TArray<FCardStruct>& SacStructArray);
 
 	UFUNCTION(BlueprintCallable, Category = "RuleChecker|Client")
-	static bool IsValidSacrificeForPlay(const ACardCoreDriver* Driver, const int PlayerIndex,const FCardStruct& CardStruct, const FCardStruct& SacrificeStruct);
+	static bool IsValidSacrificeForPlay(const ACardCoreDriver* Driver, const int PlayerIndex,const FCardStruct& CardStruct, const FCardStruct& SacStruct);
 
 	UFUNCTION(BlueprintCallable, Category = "RuleChecker|Client")
-	static bool IsValidSacrificeForEffect(const ACardCoreDriver* Driver, const int PlayerIndex,const FCardStruct& CardStruct, const FCardStruct& SacrificeStruct);
+	static bool IsValidSacrificeForEffect(const ACardCoreDriver* Driver, const int PlayerIndex,const FCardStruct& CardStruct, const FCardStruct& SacStruct);
 	
 	UFUNCTION(BlueprintCallable, Category = "RuleChecker|Client")
-	static bool IsNecessarySacrificesForPlay(const ACardCoreDriver* Driver, const int PlayerIndex, const FCardStruct& CardStruct, const TArray<FCardStruct>& Sacrifice);
+	static bool IsNecessarySacrificesForPlay(const ACardCoreDriver* Driver, const int PlayerIndex, const FCardStruct& CardStruct, const TArray<FCardStruct>& SacStructArray);
 
 	UFUNCTION(BlueprintCallable, Category = "RuleChecker|Client")
-	static bool IsNecessarySacrificesForEffect(const ACardCoreDriver* Driver, const int PlayerIndex, const FCardStruct& CardStruct, const TArray<FCardStruct>& Sacrifice);
+	static bool IsNecessarySacrificesForEffect(const ACardCoreDriver* Driver, const int PlayerIndex, const FCardStruct& CardStruct, const TArray<FCardStruct>& SacStructArray);
 	//***************************************************************
 	
 	//*************************服务器校验****************************
@@ -55,13 +55,13 @@ public:
 	static bool CanEndTurn_Server(const ACardCoreDriver* Driver, const int PlayerIndex);
 
 	UFUNCTION(BlueprintCallable, Category = "RuleChecker|Server")
-	static bool CanPlayCard_Server(const ACardCoreDriver* Driver, const int PlayerIndex, const FCardStruct& CardStruct, const TArray< FCardStruct>& Sacrifice);
+	static bool CanPlayCard_Server(const ACardCoreDriver* Driver, const int PlayerIndex, const FCardStruct& CardStruct, const TArray< FCardStruct>& SacStructArray);
 
 	UFUNCTION(BlueprintCallable, Category = "RuleChecker|Server")
 	static bool CanAttack_Server(const ACardCoreDriver* Driver, const int PlayerIndex, const FCardStruct& AttackerStruct, const FCardStruct& DefenderStruct);
 
 	UFUNCTION(BlueprintCallable, Category = "RuleChecker|Server")
-	static bool CanActivate_Server(const ACardCoreDriver* Driver, const int PlayerIndex, const FCardStruct& CardStruct, const TArray<FCardStruct>& Sacrifice);
+	static bool CanActivate_Server(const ACardCoreDriver* Driver, const int PlayerIndex, const FCardStruct& CardStruct, const TArray<FCardStruct>& SacStructArray);
 	//***************************************************************
 	
 	//***********************服务器原子事件**************************
@@ -81,7 +81,7 @@ public:
 	static bool CanApplyHeal(ACardCoreDriver* Driver, UCardInstance* Source, UCardInstance* Target, int Heal, EReason Reason);
 
 	UFUNCTION(BlueprintCallable, Category = "RuleChecker|Atomic")
-	static bool CanActivateCardWithSacrifices(ACardCoreDriver* Driver, UCardInstance* Card, const TArray<UCardInstance*>& Sacrifices, EReason Reason);
+	static bool CanActivateCardWithSacrifices(ACardCoreDriver* Driver, UCardInstance* Card, const TArray<UCardInstance*>& SacInstanceArray, EReason Reason);
 
 	UFUNCTION(BlueprintCallable, Category = "RuleChecker|Atomic")
 	static bool CanUpdateCard(ACardCoreDriver* Driver, UCardInstance* Card, EReason Reason);
@@ -103,19 +103,19 @@ public:
 	
 	//************************解释性事件*****************************
 	UFUNCTION(BlueprintCallable, Category = "RuleChecker|Resolution")
-	static bool CanSummonServant(ACardCoreDriver* Driver, int SourceCardIndex, int TargetCardIndex, const TArray<int>& SacrificeIndices);
+	static bool CanSummonServant(ACardCoreDriver* Driver, int SourceCardIndex, int TargetCardIndex, const TArray<int>& SacIndexArray);
 
 	UFUNCTION(BlueprintCallable, Category = "RuleChecker|Resolution")
-	static bool CanCastSpell(ACardCoreDriver* Driver, int SourceCardIndex, int TargetCardIndex, const TArray<int>& SacrificeIndices);
+	static bool CanCastSpell(ACardCoreDriver* Driver, int SourceCardIndex, int TargetCardIndex, const TArray<int>& SacIndexArray);
 
 	UFUNCTION(BlueprintCallable, Category = "RuleChecker|Resolution")
-	static bool CanBuildTerrain(ACardCoreDriver* Driver, int SourceCardIndex, int TargetCardIndex, const TArray<int>& SacrificeIndices);
+	static bool CanBuildTerrain(ACardCoreDriver* Driver, int SourceCardIndex, int TargetCardIndex, const TArray<int>& SacIndexArray);
 
 	UFUNCTION(BlueprintCallable, Category = "RuleChecker|Resolution")
-	static bool CanAttachEquip(ACardCoreDriver* Driver, int SourceCardIndex, int TargetCardIndex, const TArray<int>& SacrificeIndices);
+	static bool CanAttachEquip(ACardCoreDriver* Driver, int SourceCardIndex, int TargetCardIndex, const TArray<int>& SacIndexArray);
 
 	UFUNCTION(BlueprintCallable, Category = "RuleChecker|Resolution")
-	static bool CanPaySacrificeCost(ACardCoreDriver* Driver, int SacrificeCardIndex, int RelativeCardIndex);
+	static bool CanPaySacrificeCost(ACardCoreDriver* Driver, int SacIndex, int RelativeCardIndex);
 
 	UFUNCTION(BlueprintCallable, Category = "RuleChecker|Resolution")
 	static bool CanTryMoveSpellToEchoOrGrave(ACardCoreDriver* Driver, int SourceCardIndex, int RelativeCardIndex);

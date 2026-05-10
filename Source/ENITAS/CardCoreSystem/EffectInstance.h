@@ -58,13 +58,13 @@ public:
 
 	/** SourceCardStruct：当局发动效果的那张场上牌。 */
 	UFUNCTION(BlueprintNativeEvent)
-	bool ClientValidateHaveSacrifices(const ACardCoreDriver* OuterDriver, const FCardStruct& SourceCardStruct, const TArray<FCardStruct>& AllSacrificeCards);
+	bool ClientValidateHaveSacrifices(const ACardCoreDriver* OuterDriver, const FCardStruct& SourceCardStruct, const TArray<FCardStruct>& SacStructArray);
 	
 	UFUNCTION(BlueprintNativeEvent)
-	bool ClientValidateActivateSacrifices(const ACardCoreDriver* OuterDriver, const FCardStruct& SourceCardStruct, const TArray<FCardStruct>& PickUpSacrificeCards);
+	bool ClientValidateActivateSacrifices(const ACardCoreDriver* OuterDriver, const FCardStruct& SourceCardStruct, const TArray<FCardStruct>& SacStructArray);
 
 	UFUNCTION(BlueprintNativeEvent)
-	bool ClientValidateFoundSacrifice(const ACardCoreDriver* OuterDriver, const FCardStruct& SourceCardStruct, const FCardStruct& SacrificeStruct);
+	bool ClientValidateFoundSacrifice(const ACardCoreDriver* OuterDriver, const FCardStruct& SourceCardStruct, const FCardStruct& SacStruct);
 	
 	UFUNCTION()
 	void Activate();	//通过Stack点火开始结算

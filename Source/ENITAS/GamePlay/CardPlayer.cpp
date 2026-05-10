@@ -85,11 +85,11 @@ void ACardPlayer::RequestEndTurn_Implementation()
 	}
 }
 
-void ACardPlayer::RequestPlayCard_Implementation(const int SourceCard, const int TargetCard, const TArray<int>& Sacrifice)
+void ACardPlayer::RequestPlayCard_Implementation(const int SourceCard, const int TargetCard, const TArray<int>& SacIndexArray)
 {
 	if(GetWorld() -> GetGameState() && GetNetMode() != NM_Client)
 	{
-		Cast<ACardCoreDriver>(GetWorld() ->  GetGameState())  -> ReceivePlayCard(PlayerState -> GetPlayerId(), SourceCard, TargetCard, Sacrifice);
+		Cast<ACardCoreDriver>(GetWorld() ->  GetGameState())  -> ReceivePlayCard(PlayerState -> GetPlayerId(), SourceCard, TargetCard, SacIndexArray);
 	}
 }
 
@@ -101,11 +101,11 @@ void ACardPlayer::RequestAttack_Implementation(const int SourceCard, const int T
 	}
 }
 
-void ACardPlayer::RequestActivate_Implementation(const int Card, const TArray<int>& Sacrifice)
+void ACardPlayer::RequestActivate_Implementation(const int Card, const TArray<int>& SacIndexArray)
 {
 	if(GetWorld() -> GetGameState() && GetNetMode() != NM_Client)
 	{
-		Cast<ACardCoreDriver>(GetWorld() ->  GetGameState()) -> ReceiveActivate(PlayerState -> GetPlayerId(), Card, Sacrifice);
+		Cast<ACardCoreDriver>(GetWorld() ->  GetGameState()) -> ReceiveActivate(PlayerState -> GetPlayerId(), Card, SacIndexArray);
 	}
 }
 
@@ -191,6 +191,7 @@ void ACardPlayer::SetInputMode(EInputMode NewMode)
 
 void ACardPlayer::LeftMouseButtonClicked()
 {
+	// [待核对] List 为当前 AllCardModels 的全量 FCardStruct 快照，并非祭品 SacStructArray；却传入 CanPlayCard_Client / CanActivate_Client 的「代价数组」形参，语义易混，请确认客户端预检是否与服务器一致。
 	TArray<FCardStruct> List;
 	for (ACardModel* Idx : EventListener -> AllCardModels)
 	{
@@ -230,38 +231,38 @@ void ACardPlayer::LeftMouseButtonClicked()
 				URuleChecker::IsValidSacrificeForPlay(Cast<ACardCoreDriver>(GetWorld() ->  GetGameState()), PlayerState -> GetPlayerId(), FocusActor -> CardStruct, CheckHitResult() -> CardStruct))
 			{
 				TArray<ACardModel*> Entity;
-				if (!SacrificeMap.Contains(CheckHitResult() -> CardStruct.CardIndex))
+				if (!SacPickMap.Contains(CheckHitResult() -> CardStruct.CardIndex))
 				{
 
-					TArray<FCardStruct> CList;
-					SacrificeMap.GenerateValueArray(Entity);
+					TArray<FCardStruct> SacStructArray;
+					SacPickMap.GenerateValueArray(Entity);
 
 					for (ACardModel* Idx : Entity)
 					{
-						CList.Emplace(Idx -> CardStruct);
+						SacStructArray.Emplace(Idx -> CardStruct);
 					}
 					
-					if (!URuleChecker::IsNecessarySacrificesForPlay(Cast<ACardCoreDriver>(GetWorld() ->  GetGameState()), PlayerState -> GetPlayerId(), FocusActor -> CardStruct, CList))
+					if (!URuleChecker::IsNecessarySacrificesForPlay(Cast<ACardCoreDriver>(GetWorld() ->  GetGameState()), PlayerState -> GetPlayerId(), FocusActor -> CardStruct, SacStructArray))
 					{
 						CheckHitResult() -> SetCardState(EState::KeepFocus);
-						SacrificeMap.Emplace(CheckHitResult() -> CardStruct.CardIndex, CheckHitResult());
+						SacPickMap.Emplace(CheckHitResult() -> CardStruct.CardIndex, CheckHitResult());
 					}
 				}
 				else
 				{
 					CheckHitResult() -> SetCardState(EState::Lerp);
-					SacrificeMap.Remove(CheckHitResult() -> CardStruct.CardIndex);
+					SacPickMap.Remove(CheckHitResult() -> CardStruct.CardIndex);
 				}
 				
-				TArray<FCardStruct> SList;
-				SacrificeMap.GenerateValueArray(Entity);
+				TArray<FCardStruct> SacStructArray;
+				SacPickMap.GenerateValueArray(Entity);
 
 				for (ACardModel* Idx : Entity)
 				{
-					SList.Emplace(Idx -> CardStruct);
+					SacStructArray.Emplace(Idx -> CardStruct);
 				}
 				
-				if (URuleChecker::IsNecessarySacrificesForPlay(Cast<ACardCoreDriver>(GetWorld() ->  GetGameState()), PlayerState -> GetPlayerId(), FocusActor -> CardStruct, SList))	//满足度检查
+				if (URuleChecker::IsNecessarySacrificesForPlay(Cast<ACardCoreDriver>(GetWorld() ->  GetGameState()), PlayerState -> GetPlayerId(), FocusActor -> CardStruct, SacStructArray))	//满足度检查
 				{
 					MainUMG -> NotifyEndPickUpSacrifice(true);
 				}
@@ -278,38 +279,38 @@ void ACardPlayer::LeftMouseButtonClicked()
 				URuleChecker::IsValidSacrificeForEffect(Cast<ACardCoreDriver>(GetWorld() ->  GetGameState()), PlayerState -> GetPlayerId(), FocusActor -> CardStruct, CheckHitResult() -> CardStruct))
 			{
 				TArray<ACardModel*> Entity;
-				if (!SacrificeMap.Contains(CheckHitResult() -> CardStruct.CardIndex))
+				if (!SacPickMap.Contains(CheckHitResult() -> CardStruct.CardIndex))
 				{
 					
-					TArray<FCardStruct> CList;
-					SacrificeMap.GenerateValueArray(Entity);
+					TArray<FCardStruct> SacStructArray;
+					SacPickMap.GenerateValueArray(Entity);
 
 					for (ACardModel* Idx : Entity)
 					{
-						CList.Emplace(Idx -> CardStruct);
+						SacStructArray.Emplace(Idx -> CardStruct);
 					}
 					
-					if (!URuleChecker::IsNecessarySacrificesForEffect(Cast<ACardCoreDriver>(GetWorld() ->  GetGameState()), PlayerState -> GetPlayerId(), FocusActor -> CardStruct, CList))
+					if (!URuleChecker::IsNecessarySacrificesForEffect(Cast<ACardCoreDriver>(GetWorld() ->  GetGameState()), PlayerState -> GetPlayerId(), FocusActor -> CardStruct, SacStructArray))
 					{
 						CheckHitResult() -> SetCardState(EState::KeepFocus);
-						SacrificeMap.Emplace(CheckHitResult() -> CardStruct.CardIndex, CheckHitResult());
+						SacPickMap.Emplace(CheckHitResult() -> CardStruct.CardIndex, CheckHitResult());
 					}
 				}
 				else
 				{
 					CheckHitResult() -> SetCardState(EState::Lerp);
-					SacrificeMap.Remove(CheckHitResult() -> CardStruct.CardIndex);
+					SacPickMap.Remove(CheckHitResult() -> CardStruct.CardIndex);
 				}
 				
-				TArray<FCardStruct> SList;
-				SacrificeMap.GenerateValueArray(Entity);
+				TArray<FCardStruct> SacStructArray;
+				SacPickMap.GenerateValueArray(Entity);
 
 				for (ACardModel* Idx : Entity)
 				{
-					SList.Emplace(Idx -> CardStruct);
+					SacStructArray.Emplace(Idx -> CardStruct);
 				}
 				
-				if (URuleChecker::IsNecessarySacrificesForEffect(Cast<ACardCoreDriver>(GetWorld() ->  GetGameState()), PlayerState -> GetPlayerId(), FocusActor -> CardStruct, SList))	//满足度检查
+				if (URuleChecker::IsNecessarySacrificesForEffect(Cast<ACardCoreDriver>(GetWorld() ->  GetGameState()), PlayerState -> GetPlayerId(), FocusActor -> CardStruct, SacStructArray))	//满足度检查
 				{
 					MainUMG -> NotifyEndPickUpSacrifice(true);
 				}
@@ -386,30 +387,25 @@ void ACardPlayer::LeftMouseButtonReleased()
 	}
 }
 
+// [待核对] 仅把 SacIndexArray 发往服务器；此处曾构造未使用的 FCardStruct 列表已删除。请确认 ReceivePlayCard/ReceiveActivate 侧仅依赖索引是否足够、是否与规则校验一致。
 void ACardPlayer::CallBackPickUpSacrifice()
 {
-	TArray<int> Result;
+	TArray<int> SacIndexArray;
 	TArray<ACardModel*> Entity;
-	SacrificeMap.GenerateKeyArray(Result);
-	SacrificeMap.GenerateValueArray(Entity);
-	SacrificeMap.Empty();
-
-	TArray<FCardStruct> List;
-	for (ACardModel* Idx : Entity)
-	{
-		List.Emplace(Idx -> CardStruct);
-	}
+	SacPickMap.GenerateKeyArray(SacIndexArray);
+	SacPickMap.GenerateValueArray(Entity);
+	SacPickMap.Empty();
 
 	if (InputMode == EInputMode::PickUpSacrificesForPlay)
 	{
-		RequestPlayCard(FocusActor -> CardStruct.CardIndex, INT_ERROR, Result);
+		RequestPlayCard(FocusActor -> CardStruct.CardIndex, INT_ERROR, SacIndexArray);
 		SetInputMode(EInputMode::Idle);
 		return;
 	}
 
 	if (InputMode == EInputMode::PickUpSacrificesForEffect)	//分别筛选
 	{
-		RequestActivate(FocusActor -> CardStruct.CardIndex, Result);
+		RequestActivate(FocusActor -> CardStruct.CardIndex, SacIndexArray);
 		SetInputMode(EInputMode::Idle);
 		return;
 	}

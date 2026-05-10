@@ -37,13 +37,13 @@ public:
 	void RequestEndTurn();
 	
 	UFUNCTION(BlueprintCallable, Server, Reliable)
-	void RequestPlayCard(const int SourceCard, const int TargetCard, const TArray<int>& Sacrifice);	//源卡牌、目标卡牌（可以为空）、代价
+	void RequestPlayCard(const int SourceCard, const int TargetCard, const TArray<int>& SacIndexArray);	//源卡牌、目标卡牌（可以为空）、代价
 	
 	UFUNCTION(BlueprintCallable, Server, Reliable)
 	void RequestAttack(const int SourceCard, const int TargetCard);
 
 	UFUNCTION(BlueprintCallable, Server, Reliable)
-	void RequestActivate(const int Card, const TArray<int>& Sacrifice);
+	void RequestActivate(const int Card, const TArray<int>& SacIndexArray);
 
 	UFUNCTION(BlueprintCallable, Server, Reliable)
 	void RequestTarget(const int PickedTarget);

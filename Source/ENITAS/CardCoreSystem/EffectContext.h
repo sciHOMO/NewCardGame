@@ -44,6 +44,7 @@ public:
 	UCardInstance* PrePickUp;
 };
 
+// [待核对] 祭品实例数组属性曾用名 Sacrifice；若蓝图/数据资产仍引用旧属性名，需改为 SacInstanceArray（同下 BattleCry / CastSpell 上下文）。
 UCLASS()
 class UEffectContextForActivate : public UEffectContext
 {
@@ -52,7 +53,7 @@ class UEffectContextForActivate : public UEffectContext
 public:
 	
 	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly)
-	TArray<UCardInstance*> Sacrifice;
+	TArray<UCardInstance*> SacInstanceArray;
 };
 
 UCLASS()
@@ -63,7 +64,7 @@ class UEffectContextForBattleCry : public UEffectContext
 public:
 	
 	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly)
-	TArray<UCardInstance*> Sacrifice;
+	TArray<UCardInstance*> SacInstanceArray;
 };
 
 UCLASS()
@@ -85,7 +86,7 @@ class UEffectContextForCastSpell : public UEffectContext
 public:
 	
 	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly)
-	TArray<UCardInstance*> Sacrifice;
+	TArray<UCardInstance*> SacInstanceArray;
 };
 
 UCLASS()

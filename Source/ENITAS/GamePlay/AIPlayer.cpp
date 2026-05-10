@@ -65,11 +65,11 @@ void AAIPlayer::RequestEndTurn_Implementation()
 	}
 }
 
-void AAIPlayer::RequestPlayCard_Implementation(const int SourceCard, const int TargetCard, const TArray<int>& Sacrifice)
+void AAIPlayer::RequestPlayCard_Implementation(const int SourceCard, const int TargetCard, const TArray<int>& SacIndexArray)
 {
 	if(GetWorld() -> GetGameState() && GetNetMode() != NM_Client)
 	{
-		Cast<ACardCoreDriver>(GetWorld() ->  GetGameState()) -> ReceivePlayCard(PlayerState -> GetPlayerId(), SourceCard, TargetCard, Sacrifice);
+		Cast<ACardCoreDriver>(GetWorld() ->  GetGameState()) -> ReceivePlayCard(PlayerState -> GetPlayerId(), SourceCard, TargetCard, SacIndexArray);
 	}
 }
 
@@ -81,11 +81,11 @@ void AAIPlayer::RequestAttack_Implementation(const int SourceCard, const int Tar
 	}
 }
 
-void AAIPlayer::RequestActivate_Implementation(const int Card, const TArray<int>& Sacrifice)
+void AAIPlayer::RequestActivate_Implementation(const int Card, const TArray<int>& SacIndexArray)
 {
 	if(GetWorld() -> GetGameState() && GetNetMode() != NM_Client)
 	{
-		Cast<ACardCoreDriver>(GetWorld() ->  GetGameState()) -> ReceiveActivate(PlayerState -> GetPlayerId(), Card, Sacrifice);
+		Cast<ACardCoreDriver>(GetWorld() ->  GetGameState()) -> ReceiveActivate(PlayerState -> GetPlayerId(), Card, SacIndexArray);
 	}
 }
 

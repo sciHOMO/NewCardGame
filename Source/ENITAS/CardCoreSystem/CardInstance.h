@@ -172,16 +172,16 @@ public:
 
 	/** SourceCardStruct：当局源牌（打出/发动的那张），勿依赖 CDO 上 CardStruct 默认值。 */
 	UFUNCTION(BlueprintNativeEvent)
-	bool ClientValidateHaveSacrifices(const ACardCoreDriver* OuterDriver, const FCardStruct& SourceCardStruct, const TArray<FCardStruct>& AllSacrificeCards);
+	bool ClientValidateHaveSacrifices(const ACardCoreDriver* OuterDriver, const FCardStruct& SourceCardStruct, const TArray<FCardStruct>& SacStructArray);
 
 	/** SourceCardStruct：当局要打出的那张牌（含 CardLevel 等）。 */
 	UFUNCTION(BlueprintNativeEvent)
-	bool ClientValidatePlaySacrifices(const ACardCoreDriver* OuterDriver, const FCardStruct& SourceCardStruct, const TArray<FCardStruct>& PickUpSacrificeCards);
+	bool ClientValidatePlaySacrifices(const ACardCoreDriver* OuterDriver, const FCardStruct& SourceCardStruct, const TArray<FCardStruct>& SacStructArray);
 
-	/** SourceCardStruct：当局要打出的那张牌；SacrificeStruct：候选祭品。 */
+	/** SourceCardStruct：当局要打出的那张牌；SacStruct：候选祭品。 */
 	UFUNCTION(BlueprintNativeEvent)
-	bool ClientValidateFoundSacrifice(const ACardCoreDriver* OuterDriver, const FCardStruct& SourceCardStruct, const FCardStruct& SacrificeStruct);
+	bool ClientValidateFoundSacrifice(const ACardCoreDriver* OuterDriver, const FCardStruct& SourceCardStruct, const FCardStruct& SacStruct);
 
 	UFUNCTION(BlueprintNativeEvent)
-	bool ServerValidatePlaySacrifices(const ACardCoreDriver* OuterDriver, const FCardStruct& SourceCardStruct, const TArray<FCardStruct>& PickUpSacrificeCards);
+	bool ServerValidatePlaySacrifices(const ACardCoreDriver* OuterDriver, const FCardStruct& SourceCardStruct, const TArray<FCardStruct>& SacStructArray);
 };

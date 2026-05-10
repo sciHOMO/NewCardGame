@@ -149,7 +149,7 @@ public:
 	void CardApplyHeal(UCardInstance* SourceCardInstance, UCardInstance* TargetCardInstance, int Heal, EReason Reason);
 	
 	UFUNCTION(BlueprintCallable)
-	void CardActivate(UCardInstance* CardInstance, TArray<UCardInstance*> Sacrifice, EReason Reason);
+	void CardActivate(UCardInstance* CardInstance, TArray<UCardInstance*> SacInstanceArray, EReason Reason);
 
 	UFUNCTION(BlueprintCallable)
 	void CardUpdate(UCardInstance* CardInstance, EReason Reason);
@@ -174,13 +174,13 @@ public:
 	void ReceiveEndTurn(const int PlayerIndex);
 	
 	UFUNCTION()
-	void ReceivePlayCard(const int PlayerIndex, const int SourceCard, const int TargetCard, const TArray<int>& Sacrifice);
+	void ReceivePlayCard(const int PlayerIndex, const int SourceCard, const int TargetCard, const TArray<int>& SacIndexArray);
 	
 	UFUNCTION()
 	void ReceiveAttack(const int PlayerIndex, const int SourceCard, const int TargetCard);
 
 	UFUNCTION()
-	void ReceiveActivate(const int PlayerIndex, const int SourceCard, const TArray<int>& Sacrifice);
+	void ReceiveActivate(const int PlayerIndex, const int SourceCard, const TArray<int>& SacIndexArray);
 
 	UFUNCTION()
 	void ReceiveTarget(const int PlayerIndex, const int PickedTarget);
@@ -188,22 +188,22 @@ public:
 	
 	//*****************************解释性事件*******************************
 	UFUNCTION()
-	void SummonServant(const int SourceCard, const int TargetCard, const TArray<int>& Sacrifice);
+	void SummonServant(const int SourceCard, const int TargetCard, const TArray<int>& SacIndexArray);
 
 	UFUNCTION()
-	void CastSpell(const int SourceCard, const int TargetCard, const TArray<int>& Sacrifice);
+	void CastSpell(const int SourceCard, const int TargetCard, const TArray<int>& SacIndexArray);
 	
 	UFUNCTION()
-	void BuildTerrain(const int SourceCard, const int TargetCard, const TArray<int>& Sacrifice);
+	void BuildTerrain(const int SourceCard, const int TargetCard, const TArray<int>& SacIndexArray);
 	
 	UFUNCTION()
-	void AttachEquip(const int SourceCard, const int TargetCard, const TArray<int>& Sacrifice);
+	void AttachEquip(const int SourceCard, const int TargetCard, const TArray<int>& SacIndexArray);
 
 	UFUNCTION()
-	void PayCostAsSacrificeForMove(const int SourceCard, const int RelativeCard);
+	void PayCostAsSacrificeForMove(const int SacIndex, const int RelativeCardIndex);
 
 	UFUNCTION()
-	void PayCostAsSacrificeForEffect(const int SourceCard, const int RelativeCard);
+	void PayCostAsSacrificeForEffect(const int SacIndex, const int RelativeCardIndex);
 
 	UFUNCTION()
 	void TryMoveToEcho(const int SourceCard, const int RelativeCard);
