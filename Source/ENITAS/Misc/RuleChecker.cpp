@@ -25,7 +25,7 @@ bool URuleChecker::CanPlayCard_Client(const ACardCoreDriver* Driver, const int P
 		UCardInstance* CardCDO = CardStruct.CardInstanceClass -> GetDefaultObject<UCardInstance>();
 		if (!CardCDO) return false;
 		
-		return CardCDO -> ClientValidateHaveSacrifices(Driver, Sacrifice);
+		return CardCDO -> ClientValidateHaveSacrifices(Driver, CardStruct, Sacrifice);
 	}
 }
 
@@ -56,7 +56,6 @@ bool URuleChecker::CanAttack_Client(const ACardCoreDriver* Driver, const int Pla
 
 bool URuleChecker::CanActivate_Client(const ACardCoreDriver* Driver, const int PlayerIndex, const FCardStruct& CardStruct, const TArray<FCardStruct>& Sacrifice)
 {
-	(void)Sacrifice;
 	if (Driver -> GamePhase == EPhase::Player_0_Turn && PlayerIndex) return false;
 	if (Driver -> GamePhase == EPhase::Player_1_Turn && !PlayerIndex) return false;
 	if (PlayerIndex != CardStruct.PlayerIndex) return false;
@@ -75,7 +74,7 @@ bool URuleChecker::CanActivate_Client(const ACardCoreDriver* Driver, const int P
 		UEffectInstance* EffectCDO = (*EffectClassPtr) -> GetDefaultObject<UEffectInstance>();
 		if (!EffectCDO) return false;
 
-		return EffectCDO -> ClientValidateHaveSacrifices(Driver, Sacrifice);
+		return EffectCDO -> ClientValidateHaveSacrifices(Driver, CardStruct, Sacrifice);
 	}
 }
 
@@ -93,7 +92,7 @@ bool URuleChecker::IsValidSacrificeForPlay(const ACardCoreDriver* Driver, const 
 		UCardInstance* CardCDO = CardStruct.CardInstanceClass -> GetDefaultObject<UCardInstance>();
 		if (!CardCDO) return false;
 		
-		return CardCDO -> ClientValidateFoundSacrifice(Driver, SacrificeStruct);
+		return CardCDO -> ClientValidateFoundSacrifice(Driver, CardStruct, SacrificeStruct);
 	}
 }
 
@@ -117,7 +116,7 @@ bool URuleChecker::IsValidSacrificeForEffect(const ACardCoreDriver* Driver, cons
 		UEffectInstance* EffectCDO = (*EffectClassPtr) -> GetDefaultObject<UEffectInstance>();
 		if (!EffectCDO) return false;
 		
-		return EffectCDO -> ClientValidateFoundSacrifice(Driver, SacrificeStruct);
+		return EffectCDO -> ClientValidateFoundSacrifice(Driver, CardStruct, SacrificeStruct);
 	}
 }
 
@@ -129,7 +128,7 @@ bool URuleChecker::IsNecessarySacrificesForPlay(const ACardCoreDriver* Driver, c
 		UCardInstance* CardCDO = CardStruct.CardInstanceClass -> GetDefaultObject<UCardInstance>();
 		if (!CardCDO) return false;
 		
-		return CardCDO -> ClientValidatePlaySacrifices(Driver, Sacrifice);
+		return CardCDO -> ClientValidatePlaySacrifices(Driver, CardStruct, Sacrifice);
 	}
 }
 
@@ -147,7 +146,7 @@ bool URuleChecker::IsNecessarySacrificesForEffect(const ACardCoreDriver* Driver,
 		UEffectInstance* EffectCDO = (*EffectClassPtr) -> GetDefaultObject<UEffectInstance>();
 		if (!EffectCDO) return false;
 		
-		return EffectCDO -> ClientValidateActivateSacrifices(Driver, Sacrifice);
+		return EffectCDO -> ClientValidateActivateSacrifices(Driver, CardStruct, Sacrifice);
 	}
 }
 //*************************************************************************
@@ -192,15 +191,68 @@ bool URuleChecker::CanPlayCard_Server(const ACardCoreDriver* Driver, const int P
 		UCardInstance* CardCDO = CardStruct.CardInstanceClass -> GetDefaultObject<UCardInstance>();
 		if (!CardCDO) return false;
 		
-		return CardCDO -> ClientValidatePlaySacrifices(Driver, Sacrifice);
+		return CardCDO -> ClientValidatePlaySacrifices(Driver, CardStruct, Sacrifice);
 	}
 }
 
+bool URuleChecker::CanAttack_Server(const ACardCoreDriver* Driver, const int PlayerIndex, const FCardStruct& AttackerStruct, const FCardStruct& DefenderStruct)
+{
+	if (!Driver) return false;
+	if (Driver -> TurnNum == 1) return false;
+	if (Driver -> GamePhase == EPhase::Player_0_Turn && PlayerIndex) return false;
+	if (Driver -> GamePhase == EPhase::Player_1_Turn && !PlayerIndex) return false;
+	if (PlayerIndex != AttackerStruct.PlayerIndex) return false;
+	if (PlayerIndex == DefenderStruct.PlayerIndex) return false;
+	if (AttackerStruct.CardZone != EZone::BoardZone) return false;
+	if (DefenderStruct.CardZone != EZone::BoardZone) return false;
+	if (AttackerStruct.Tapped) return false;
 
+	return true;
+}
+
+bool URuleChecker::CanActivate_Server(const ACardCoreDriver* Driver, const int PlayerIndex, const FCardStruct& CardStruct, const TArray<FCardStruct>& Sacrifice)
+{
+	if (!Driver) return false;
+	if (Driver -> GamePhase == EPhase::Player_0_Turn && PlayerIndex) return false;
+	if (Driver -> GamePhase == EPhase::Player_1_Turn && !PlayerIndex) return false;
+	if (PlayerIndex != CardStruct.PlayerIndex) return false;
+	if (CardStruct.CardZone != EZone::BoardZone) return false;
+	if (CardStruct.Tapped) return false;
+
+	for (const FCardStruct& Idx : Sacrifice)
+	{
+		if (Idx.PlayerIndex != PlayerIndex)
+		{
+			return false;
+		}
+		if (Idx.CardZone != EZone::HandZone && Idx.CardZone != EZone::EchoZone)
+		{
+			return false;
+		}
+		if (Idx.CardIndex == CardStruct.CardIndex)
+		{
+			return false;
+		}
+	}
+
+	{
+		if (!CardStruct.CardInstanceClass) return false;
+
+		const UCardInstance* CardCDO = CardStruct.CardInstanceClass -> GetDefaultObject<UCardInstance>();
+		if (!CardCDO) return false;
+
+		const TSubclassOf<UEffectInstance>* EffectClassPtr = CardCDO->EffectForCondition.Find(ECondition::Activate);
+		if (!EffectClassPtr || !(*EffectClassPtr)) return false;
+
+		UEffectInstance* EffectCDO = (*EffectClassPtr) -> GetDefaultObject<UEffectInstance>();
+		if (!EffectCDO) return false;
+
+		return EffectCDO -> ClientValidateActivateSacrifices(Driver, CardStruct, Sacrifice);
+	}
+}
 //*************************************************************************
 
-bool URuleChecker::CanMoveCard(ACardCoreDriver* Driver, UCardInstance* Card, EZone FromZone, EZone ToZone, EReason Reason,
-	FText& OutFailureReason)
+bool URuleChecker::CanMoveCard(ACardCoreDriver* Driver, UCardInstance* Card, EZone FromZone, EZone ToZone, EReason Reason, FText& OutFailureReason)
 {
 	(void)Driver;
 	(void)Card;
@@ -211,8 +263,7 @@ bool URuleChecker::CanMoveCard(ACardCoreDriver* Driver, UCardInstance* Card, EZo
 	return false;
 }
 
-bool URuleChecker::CanAttachCard(ACardCoreDriver* Driver, UCardInstance* SourceCard, UCardInstance* TargetCard,
-	EReason Reason, FText& OutFailureReason)
+bool URuleChecker::CanAttachCard(ACardCoreDriver* Driver, UCardInstance* SourceCard, UCardInstance* TargetCard, EReason Reason, FText& OutFailureReason)
 {
 	(void)Driver;
 	(void)SourceCard;
@@ -222,8 +273,7 @@ bool URuleChecker::CanAttachCard(ACardCoreDriver* Driver, UCardInstance* SourceC
 	return false;
 }
 
-bool URuleChecker::CanDeclareCardAttack(ACardCoreDriver* Driver, UCardInstance* Attacker, UCardInstance* Defender,
-	EReason Reason, FText& OutFailureReason)
+bool URuleChecker::CanDeclareCardAttack(ACardCoreDriver* Driver, UCardInstance* Attacker, UCardInstance* Defender, EReason Reason, FText& OutFailureReason)
 {
 	(void)Driver;
 	(void)Attacker;
@@ -233,8 +283,7 @@ bool URuleChecker::CanDeclareCardAttack(ACardCoreDriver* Driver, UCardInstance* 
 	return false;
 }
 
-bool URuleChecker::CanApplyDamage(ACardCoreDriver* Driver, UCardInstance* Source, UCardInstance* Target, int Damage,
-	EReason Reason, FText& OutFailureReason)
+bool URuleChecker::CanApplyDamage(ACardCoreDriver* Driver, UCardInstance* Source, UCardInstance* Target, int Damage, EReason Reason, FText& OutFailureReason)
 {
 	(void)Driver;
 	(void)Source;
@@ -245,8 +294,7 @@ bool URuleChecker::CanApplyDamage(ACardCoreDriver* Driver, UCardInstance* Source
 	return false;
 }
 
-bool URuleChecker::CanApplyHeal(ACardCoreDriver* Driver, UCardInstance* Source, UCardInstance* Target, int Heal,
-	EReason Reason, FText& OutFailureReason)
+bool URuleChecker::CanApplyHeal(ACardCoreDriver* Driver, UCardInstance* Source, UCardInstance* Target, int Heal, EReason Reason, FText& OutFailureReason)
 {
 	(void)Driver;
 	(void)Source;
@@ -257,8 +305,7 @@ bool URuleChecker::CanApplyHeal(ACardCoreDriver* Driver, UCardInstance* Source, 
 	return false;
 }
 
-bool URuleChecker::CanActivateCardWithSacrifices(ACardCoreDriver* Driver, UCardInstance* Card,
-	const TArray<UCardInstance*>& Sacrifices, EReason Reason, FText& OutFailureReason)
+bool URuleChecker::CanActivateCardWithSacrifices(ACardCoreDriver* Driver, UCardInstance* Card, const TArray<UCardInstance*>& Sacrifices, EReason Reason, FText& OutFailureReason)
 {
 	(void)Driver;
 	(void)Card;
@@ -277,8 +324,7 @@ bool URuleChecker::CanUpdateCard(ACardCoreDriver* Driver, UCardInstance* Card, E
 	return false;
 }
 
-bool URuleChecker::CanApplyEffectToInstance(ACardCoreDriver* Driver, UCardInstance* Source, UEffectInstance* TargetEffect,
-	EReason Reason, FText& OutFailureReason)
+bool URuleChecker::CanApplyEffectToInstance(ACardCoreDriver* Driver, UCardInstance* Source, UEffectInstance* TargetEffect, EReason Reason, FText& OutFailureReason)
 {
 	(void)Driver;
 	(void)Source;
@@ -306,8 +352,7 @@ bool URuleChecker::CanNormalDraw(ACardCoreDriver* Driver, int PlayerIndex, int N
 	return false;
 }
 
-bool URuleChecker::CanNormalDrawToHandSize(ACardCoreDriver* Driver, int PlayerIndex, int TargetHandSize,
-	FText& OutFailureReason)
+bool URuleChecker::CanNormalDrawToHandSize(ACardCoreDriver* Driver, int PlayerIndex, int TargetHandSize, FText& OutFailureReason)
 {
 	(void)Driver;
 	(void)PlayerIndex;
@@ -316,8 +361,7 @@ bool URuleChecker::CanNormalDrawToHandSize(ACardCoreDriver* Driver, int PlayerIn
 	return false;
 }
 
-bool URuleChecker::CanSummonServant(ACardCoreDriver* Driver, int SourceCardIndex, int TargetCardIndex,
-	const TArray<int>& SacrificeIndices, FText& OutFailureReason)
+bool URuleChecker::CanSummonServant(ACardCoreDriver* Driver, int SourceCardIndex, int TargetCardIndex, const TArray<int>& SacrificeIndices, FText& OutFailureReason)
 {
 	(void)Driver;
 	(void)SourceCardIndex;
@@ -327,8 +371,7 @@ bool URuleChecker::CanSummonServant(ACardCoreDriver* Driver, int SourceCardIndex
 	return false;
 }
 
-bool URuleChecker::CanCastSpell(ACardCoreDriver* Driver, int SourceCardIndex, int TargetCardIndex,
-	const TArray<int>& SacrificeIndices, FText& OutFailureReason)
+bool URuleChecker::CanCastSpell(ACardCoreDriver* Driver, int SourceCardIndex, int TargetCardIndex, const TArray<int>& SacrificeIndices, FText& OutFailureReason)
 {
 	(void)Driver;
 	(void)SourceCardIndex;
@@ -338,8 +381,7 @@ bool URuleChecker::CanCastSpell(ACardCoreDriver* Driver, int SourceCardIndex, in
 	return false;
 }
 
-bool URuleChecker::CanBuildTerrain(ACardCoreDriver* Driver, int SourceCardIndex, int TargetCardIndex,
-	const TArray<int>& SacrificeIndices, FText& OutFailureReason)
+bool URuleChecker::CanBuildTerrain(ACardCoreDriver* Driver, int SourceCardIndex, int TargetCardIndex, const TArray<int>& SacrificeIndices, FText& OutFailureReason)
 {
 	(void)Driver;
 	(void)SourceCardIndex;
@@ -349,8 +391,7 @@ bool URuleChecker::CanBuildTerrain(ACardCoreDriver* Driver, int SourceCardIndex,
 	return false;
 }
 
-bool URuleChecker::CanAttachEquip(ACardCoreDriver* Driver, int SourceCardIndex, int TargetCardIndex,
-	const TArray<int>& SacrificeIndices, FText& OutFailureReason)
+bool URuleChecker::CanAttachEquip(ACardCoreDriver* Driver, int SourceCardIndex, int TargetCardIndex, const TArray<int>& SacrificeIndices, FText& OutFailureReason)
 {
 	(void)Driver;
 	(void)SourceCardIndex;
@@ -360,8 +401,7 @@ bool URuleChecker::CanAttachEquip(ACardCoreDriver* Driver, int SourceCardIndex, 
 	return false;
 }
 
-bool URuleChecker::CanPaySacrificeCost(ACardCoreDriver* Driver, int SacrificeCardIndex, int RelativeSpellOrPlayCardIndex,
-	FText& OutFailureReason)
+bool URuleChecker::CanPaySacrificeCost(ACardCoreDriver* Driver, int SacrificeCardIndex, int RelativeSpellOrPlayCardIndex, FText& OutFailureReason)
 {
 	(void)Driver;
 	(void)SacrificeCardIndex;
@@ -370,8 +410,7 @@ bool URuleChecker::CanPaySacrificeCost(ACardCoreDriver* Driver, int SacrificeCar
 	return false;
 }
 
-bool URuleChecker::CanTryMoveSpellToEchoOrGrave(ACardCoreDriver* Driver, int SourceCardIndex, int RelativeCardIndex,
-	FText& OutFailureReason)
+bool URuleChecker::CanTryMoveSpellToEchoOrGrave(ACardCoreDriver* Driver, int SourceCardIndex, int RelativeCardIndex, FText& OutFailureReason)
 {
 	(void)Driver;
 	(void)SourceCardIndex;

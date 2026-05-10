@@ -57,38 +57,37 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "RuleChecker|Server")
 	static bool CanPlayCard_Server(const ACardCoreDriver* Driver, const int PlayerIndex, const FCardStruct& CardStruct, const TArray< FCardStruct>& Sacrifice);
+
+	UFUNCTION(BlueprintCallable, Category = "RuleChecker|Server")
+	static bool CanAttack_Server(const ACardCoreDriver* Driver, const int PlayerIndex, const FCardStruct& AttackerStruct, const FCardStruct& DefenderStruct);
+
+	UFUNCTION(BlueprintCallable, Category = "RuleChecker|Server")
+	static bool CanActivate_Server(const ACardCoreDriver* Driver, const int PlayerIndex, const FCardStruct& CardStruct, const TArray<FCardStruct>& Sacrifice);
 	
 	// --- 原子事件（对应 CardMove / CardAttack / CardActivate 等前置条件）---
 	UFUNCTION(BlueprintCallable, Category = "RuleChecker|Atomic")
-	static bool CanMoveCard(ACardCoreDriver* Driver, UCardInstance* Card, EZone FromZone, EZone ToZone, EReason Reason,
-		FText& OutFailureReason);
+	static bool CanMoveCard(ACardCoreDriver* Driver, UCardInstance* Card, EZone FromZone, EZone ToZone, EReason Reason, FText& OutFailureReason);
 
 	UFUNCTION(BlueprintCallable, Category = "RuleChecker|Atomic")
-	static bool CanAttachCard(ACardCoreDriver* Driver, UCardInstance* SourceCard, UCardInstance* TargetCard,
-		EReason Reason, FText& OutFailureReason);
+	static bool CanAttachCard(ACardCoreDriver* Driver, UCardInstance* SourceCard, UCardInstance* TargetCard, EReason Reason, FText& OutFailureReason);
 
 	UFUNCTION(BlueprintCallable, Category = "RuleChecker|Atomic")
-	static bool CanDeclareCardAttack(ACardCoreDriver* Driver, UCardInstance* Attacker, UCardInstance* Defender,
-		EReason Reason, FText& OutFailureReason);
+	static bool CanDeclareCardAttack(ACardCoreDriver* Driver, UCardInstance* Attacker, UCardInstance* Defender, EReason Reason, FText& OutFailureReason);
 
 	UFUNCTION(BlueprintCallable, Category = "RuleChecker|Atomic")
-	static bool CanApplyDamage(ACardCoreDriver* Driver, UCardInstance* Source, UCardInstance* Target, int Damage,
-		EReason Reason, FText& OutFailureReason);
+	static bool CanApplyDamage(ACardCoreDriver* Driver, UCardInstance* Source, UCardInstance* Target, int Damage, EReason Reason, FText& OutFailureReason);
 
 	UFUNCTION(BlueprintCallable, Category = "RuleChecker|Atomic")
-	static bool CanApplyHeal(ACardCoreDriver* Driver, UCardInstance* Source, UCardInstance* Target, int Heal,
-		EReason Reason, FText& OutFailureReason);
+	static bool CanApplyHeal(ACardCoreDriver* Driver, UCardInstance* Source, UCardInstance* Target, int Heal, EReason Reason, FText& OutFailureReason);
 
 	UFUNCTION(BlueprintCallable, Category = "RuleChecker|Atomic")
-	static bool CanActivateCardWithSacrifices(ACardCoreDriver* Driver, UCardInstance* Card,
-		const TArray<UCardInstance*>& Sacrifices, EReason Reason, FText& OutFailureReason);
+	static bool CanActivateCardWithSacrifices(ACardCoreDriver* Driver, UCardInstance* Card, const TArray<UCardInstance*>& Sacrifices, EReason Reason, FText& OutFailureReason);
 
 	UFUNCTION(BlueprintCallable, Category = "RuleChecker|Atomic")
 	static bool CanUpdateCard(ACardCoreDriver* Driver, UCardInstance* Card, EReason Reason, FText& OutFailureReason);
 
 	UFUNCTION(BlueprintCallable, Category = "RuleChecker|Atomic")
-	static bool CanApplyEffectToInstance(ACardCoreDriver* Driver, UCardInstance* Source,
-		UEffectInstance* TargetEffect, EReason Reason, FText& OutFailureReason);
+	static bool CanApplyEffectToInstance(ACardCoreDriver* Driver, UCardInstance* Source, UEffectInstance* TargetEffect, EReason Reason, FText& OutFailureReason);
 
 	UFUNCTION(BlueprintCallable, Category = "RuleChecker|Atomic")
 	static bool CanRevealCard(ACardCoreDriver* Driver, UCardInstance* Card, EReason Reason, FText& OutFailureReason);
@@ -99,32 +98,25 @@ public:
 	static bool CanNormalDraw(ACardCoreDriver* Driver, int PlayerIndex, int NumCards, FText& OutFailureReason);
 
 	UFUNCTION(BlueprintCallable, Category = "RuleChecker|Flow")
-	static bool CanNormalDrawToHandSize(ACardCoreDriver* Driver, int PlayerIndex, int TargetHandSize,
-		FText& OutFailureReason);
+	static bool CanNormalDrawToHandSize(ACardCoreDriver* Driver, int PlayerIndex, int TargetHandSize, FText& OutFailureReason);
 
 	// --- 解释性事件（对应 SummonServant / CastSpell / BuildTerrain / AttachEquip / PayCost / Echo）---
 
 	UFUNCTION(BlueprintCallable, Category = "RuleChecker|Resolution")
-	static bool CanSummonServant(ACardCoreDriver* Driver, int SourceCardIndex, int TargetCardIndex,
-		const TArray<int>& SacrificeIndices, FText& OutFailureReason);
+	static bool CanSummonServant(ACardCoreDriver* Driver, int SourceCardIndex, int TargetCardIndex, const TArray<int>& SacrificeIndices, FText& OutFailureReason);
 
 	UFUNCTION(BlueprintCallable, Category = "RuleChecker|Resolution")
-	static bool CanCastSpell(ACardCoreDriver* Driver, int SourceCardIndex, int TargetCardIndex,
-		const TArray<int>& SacrificeIndices, FText& OutFailureReason);
+	static bool CanCastSpell(ACardCoreDriver* Driver, int SourceCardIndex, int TargetCardIndex, const TArray<int>& SacrificeIndices, FText& OutFailureReason);
 
 	UFUNCTION(BlueprintCallable, Category = "RuleChecker|Resolution")
-	static bool CanBuildTerrain(ACardCoreDriver* Driver, int SourceCardIndex, int TargetCardIndex,
-		const TArray<int>& SacrificeIndices, FText& OutFailureReason);
+	static bool CanBuildTerrain(ACardCoreDriver* Driver, int SourceCardIndex, int TargetCardIndex, const TArray<int>& SacrificeIndices, FText& OutFailureReason);
 
 	UFUNCTION(BlueprintCallable, Category = "RuleChecker|Resolution")
-	static bool CanAttachEquip(ACardCoreDriver* Driver, int SourceCardIndex, int TargetCardIndex,
-		const TArray<int>& SacrificeIndices, FText& OutFailureReason);
+	static bool CanAttachEquip(ACardCoreDriver* Driver, int SourceCardIndex, int TargetCardIndex, const TArray<int>& SacrificeIndices, FText& OutFailureReason);
 
 	UFUNCTION(BlueprintCallable, Category = "RuleChecker|Resolution")
-	static bool CanPaySacrificeCost(ACardCoreDriver* Driver, int SacrificeCardIndex, int RelativeSpellOrPlayCardIndex,
-		FText& OutFailureReason);
+	static bool CanPaySacrificeCost(ACardCoreDriver* Driver, int SacrificeCardIndex, int RelativeSpellOrPlayCardIndex, FText& OutFailureReason);
 
 	UFUNCTION(BlueprintCallable, Category = "RuleChecker|Resolution")
-	static bool CanTryMoveSpellToEchoOrGrave(ACardCoreDriver* Driver, int SourceCardIndex, int RelativeCardIndex,
-		FText& OutFailureReason);
+	static bool CanTryMoveSpellToEchoOrGrave(ACardCoreDriver* Driver, int SourceCardIndex, int RelativeCardIndex, FText& OutFailureReason);
 };

@@ -15,7 +15,7 @@ class ACardCoreDriver;
 //效果技术方案简介：
 //采用UEffectInstance作为效果的基础。
 //服务器模拟事件总线询问全部卡牌是否有效果需要触发
-//通过CDO方法检测UEffectInstance是否应当响应那个触发时机，是否有对象（时机/目标校验，代价参见 ClientValidateActivateSacrifices）
+//通过CDO方法检测UEffectInstance是否应当响应那个触发时机，是否有对象（时机/目标校验，代价参见 ClientValidateActivateSacrifices；当局源牌用 SourceCardStruct 传入）
 //创建效果UEffectInstance后压入Stack中逐个执行
 //执行流程由UEffectInstance的Activate、Complete函数控制
 
@@ -56,14 +56,15 @@ public:
 	UFUNCTION(BlueprintNativeEvent)
 	TArray<int> GetValidTargets();	//目标筛选器	
 
+	/** SourceCardStruct：当局发动效果的那张场上牌。 */
 	UFUNCTION(BlueprintNativeEvent)
-	bool ClientValidateHaveSacrifices(const ACardCoreDriver* OuterDriver, const TArray<FCardStruct>& AllSacrificeCards);
+	bool ClientValidateHaveSacrifices(const ACardCoreDriver* OuterDriver, const FCardStruct& SourceCardStruct, const TArray<FCardStruct>& AllSacrificeCards);
 	
 	UFUNCTION(BlueprintNativeEvent)
-	bool ClientValidateActivateSacrifices(const ACardCoreDriver* OuterDriver, const TArray<FCardStruct>& SelectedSacrificeCards);
+	bool ClientValidateActivateSacrifices(const ACardCoreDriver* OuterDriver, const FCardStruct& SourceCardStruct, const TArray<FCardStruct>& PickUpSacrificeCards);
 
 	UFUNCTION(BlueprintNativeEvent)
-	bool ClientValidateFoundSacrifice(const ACardCoreDriver* OuterDriver, const FCardStruct& SacrificeStruct);
+	bool ClientValidateFoundSacrifice(const ACardCoreDriver* OuterDriver, const FCardStruct& SourceCardStruct, const FCardStruct& SacrificeStruct);
 	
 	UFUNCTION()
 	void Activate();	//通过Stack点火开始结算

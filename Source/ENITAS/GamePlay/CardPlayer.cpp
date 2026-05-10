@@ -229,10 +229,23 @@ void ACardPlayer::LeftMouseButtonClicked()
 			if (CheckHitResult() && CheckHitResult() != FocusActor &&
 				URuleChecker::IsValidSacrificeForPlay(Cast<ACardCoreDriver>(GetWorld() ->  GetGameState()), PlayerState -> GetPlayerId(), FocusActor -> CardStruct, CheckHitResult() -> CardStruct))
 			{
+				TArray<ACardModel*> Entity;
 				if (!SacrificeMap.Contains(CheckHitResult() -> CardStruct.CardIndex))
 				{
-					CheckHitResult() -> SetCardState(EState::Focus);
-					SacrificeMap.Emplace(CheckHitResult() -> CardStruct.CardIndex, CheckHitResult());
+
+					TArray<FCardStruct> CList;
+					SacrificeMap.GenerateValueArray(Entity);
+
+					for (ACardModel* Idx : Entity)
+					{
+						CList.Emplace(Idx -> CardStruct);
+					}
+					
+					if (!URuleChecker::IsNecessarySacrificesForPlay(Cast<ACardCoreDriver>(GetWorld() ->  GetGameState()), PlayerState -> GetPlayerId(), FocusActor -> CardStruct, CList))
+					{
+						CheckHitResult() -> SetCardState(EState::KeepFocus);
+						SacrificeMap.Emplace(CheckHitResult() -> CardStruct.CardIndex, CheckHitResult());
+					}
 				}
 				else
 				{
@@ -240,7 +253,6 @@ void ACardPlayer::LeftMouseButtonClicked()
 					SacrificeMap.Remove(CheckHitResult() -> CardStruct.CardIndex);
 				}
 				
-				TArray<ACardModel*> Entity;
 				TArray<FCardStruct> SList;
 				SacrificeMap.GenerateValueArray(Entity);
 
@@ -264,19 +276,31 @@ void ACardPlayer::LeftMouseButtonClicked()
 		{
 			if (CheckHitResult() && CheckHitResult() != FocusActor &&
 				URuleChecker::IsValidSacrificeForEffect(Cast<ACardCoreDriver>(GetWorld() ->  GetGameState()), PlayerState -> GetPlayerId(), FocusActor -> CardStruct, CheckHitResult() -> CardStruct))
-		{
+			{
+				TArray<ACardModel*> Entity;
 				if (!SacrificeMap.Contains(CheckHitResult() -> CardStruct.CardIndex))
 				{
-					CheckHitResult() -> SetCardState(EState::Focus);
-					SacrificeMap.Emplace(CheckHitResult() -> CardStruct.CardIndex, CheckHitResult());
+					
+					TArray<FCardStruct> CList;
+					SacrificeMap.GenerateValueArray(Entity);
+
+					for (ACardModel* Idx : Entity)
+					{
+						CList.Emplace(Idx -> CardStruct);
+					}
+					
+					if (!URuleChecker::IsNecessarySacrificesForEffect(Cast<ACardCoreDriver>(GetWorld() ->  GetGameState()), PlayerState -> GetPlayerId(), FocusActor -> CardStruct, CList))
+					{
+						CheckHitResult() -> SetCardState(EState::KeepFocus);
+						SacrificeMap.Emplace(CheckHitResult() -> CardStruct.CardIndex, CheckHitResult());
+					}
 				}
 				else
 				{
 					CheckHitResult() -> SetCardState(EState::Lerp);
 					SacrificeMap.Remove(CheckHitResult() -> CardStruct.CardIndex);
 				}
-
-				TArray<ACardModel*> Entity;
+				
 				TArray<FCardStruct> SList;
 				SacrificeMap.GenerateValueArray(Entity);
 

@@ -9,6 +9,7 @@
 #include "../GamePlay/AIPlayer.h"
 #include "../GamePlay/CardPlayer.h"
 #include "ENITAS/Misc/RuleChecker.h"
+#include "Engine/Engine.h"
 #include "Kismet/GameplayStatics.h"
 
 void ACardCoreDriver::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -548,11 +549,10 @@ void ACardCoreDriver::ReceiveEndTurn(const int PlayerIndex)
 
 void ACardCoreDriver::ReceivePlayCard(const int PlayerIndex, const int SourceCard, const int TargetCard, const TArray<int>& Sacrifice)	//基于后进先出的顺序，先生成本身的事件，再检测代价
 {
-	UCardInstance* const SourceInstance = GetCardInstanceByIndex(SourceCard);
+	const UCardInstance* const SourceInstance = GetCardInstanceByIndex(SourceCard);
 	if (!SourceInstance) return;
 
 	TArray<FCardStruct> SacrificeStruct;
-	SacrificeStruct.Reserve(Sacrifice.Num());
 	for (const int Idx : Sacrifice)
 	{
 		if (UCardInstance* const SacInstance = GetCardInstanceByIndex(Idx))
@@ -564,8 +564,7 @@ void ACardCoreDriver::ReceivePlayCard(const int PlayerIndex, const int SourceCar
 			return;
 		}
 	}
-
-	// 打出校验必须以「手牌/场上的源卡」SourceCard 为准；TargetCard 常为落点或 INT_ERROR，不可用于规则里的打出卡结构体。
+	
 	if (!URuleChecker::CanPlayCard_Server(this, PlayerIndex, SourceInstance -> CardStruct, SacrificeStruct)) return;
 
 	for (const int Idx : Sacrifice)
@@ -592,7 +591,12 @@ void ACardCoreDriver::ReceivePlayCard(const int PlayerIndex, const int SourceCar
 
 void ACardCoreDriver::ReceiveAttack(const int PlayerIndex, const int SourceCard, const int TargetCard)
 {
-	if (false) return;
+	const UCardInstance* const SourceInstance = GetCardInstanceByIndex(SourceCard);
+	if (!SourceInstance) return;
+	const UCardInstance* const TargetInstance = GetCardInstanceByIndex(TargetCard);
+	if (!TargetInstance) return;
+	
+	if (!URuleChecker::CanAttack_Server(this, PlayerIndex, SourceInstance -> CardStruct, TargetInstance -> CardStruct)) return;
 
 	CardAttack(GetCardInstanceByIndex(SourceCard), GetCardInstanceByIndex(TargetCard), EReason::PlaceHolder);
 
@@ -601,8 +605,24 @@ void ACardCoreDriver::ReceiveAttack(const int PlayerIndex, const int SourceCard,
 
 void ACardCoreDriver::ReceiveActivate(const int PlayerIndex, const int SourceCard, const TArray<int>& Sacrifice)	//这些效果遵循后进先出。
 {
-	if (false) return;
-	
+	const UCardInstance* const SourceInstance = GetCardInstanceByIndex(SourceCard);
+	if (!SourceInstance) return;
+
+	TArray<FCardStruct> SacrificeStruct;
+	for (const int Idx : Sacrifice)
+	{
+		if (UCardInstance* const SacInstance = GetCardInstanceByIndex(Idx))
+		{
+			SacrificeStruct.Emplace(SacInstance -> CardStruct);
+		}
+		else
+		{
+			return;
+		}
+	}
+
+	if (!URuleChecker::CanActivate_Server(this, PlayerIndex, SourceInstance -> CardStruct, SacrificeStruct)) return;
+
 	TArray<UCardInstance*> SacrificeCardInstances = {};
 	for (const int Idx : Sacrifice)
 	{

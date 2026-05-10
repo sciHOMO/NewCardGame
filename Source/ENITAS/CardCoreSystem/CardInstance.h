@@ -170,12 +170,18 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TMap<ECondition, TSubclassOf<UEffectInstance>> EffectForCondition;	//效果定义
 
+	/** SourceCardStruct：当局源牌（打出/发动的那张），勿依赖 CDO 上 CardStruct 默认值。 */
 	UFUNCTION(BlueprintNativeEvent)
-	bool ClientValidateHaveSacrifices(const ACardCoreDriver* OuterDriver, const TArray<FCardStruct>& AllSacrificeCards);	//检测是否有合法代价，触发效果时检测
+	bool ClientValidateHaveSacrifices(const ACardCoreDriver* OuterDriver, const FCardStruct& SourceCardStruct, const TArray<FCardStruct>& AllSacrificeCards);
+
+	/** SourceCardStruct：当局要打出的那张牌（含 CardLevel 等）。 */
+	UFUNCTION(BlueprintNativeEvent)
+	bool ClientValidatePlaySacrifices(const ACardCoreDriver* OuterDriver, const FCardStruct& SourceCardStruct, const TArray<FCardStruct>& PickUpSacrificeCards);
+
+	/** SourceCardStruct：当局要打出的那张牌；SacrificeStruct：候选祭品。 */
+	UFUNCTION(BlueprintNativeEvent)
+	bool ClientValidateFoundSacrifice(const ACardCoreDriver* OuterDriver, const FCardStruct& SourceCardStruct, const FCardStruct& SacrificeStruct);
 
 	UFUNCTION(BlueprintNativeEvent)
-	bool ClientValidatePlaySacrifices(const ACardCoreDriver* OuterDriver, const TArray<FCardStruct>& PickUpSacrificeCards);	//检测当前已选择的代价，每次取对象均检测
-
-	UFUNCTION(BlueprintNativeEvent)
-	bool ClientValidateFoundSacrifice(const ACardCoreDriver* OuterDriver, const FCardStruct& SacrificeStruct);	//单个对象检测
+	bool ServerValidatePlaySacrifices(const ACardCoreDriver* OuterDriver, const FCardStruct& SourceCardStruct, const TArray<FCardStruct>& PickUpSacrificeCards);
 };

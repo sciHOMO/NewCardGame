@@ -15,9 +15,10 @@ UENUM(BlueprintType)
 enum class EState : uint8
 {
 	Anim					UMETA(DisplayName = "Anim"),
-	Lerp						UMETA(DisplayName = "Lerp"),
+	Lerp					UMETA(DisplayName = "Lerp"),
 	Follow					UMETA(DisplayName = "Follow"),
 	Focus					UMETA(DisplayName = "Focus"),
+	KeepFocus			UMETA(DisplayName = "KeepFocus"),
 	Hide					UMETA(DisplayName = "Hide"),
 };
 

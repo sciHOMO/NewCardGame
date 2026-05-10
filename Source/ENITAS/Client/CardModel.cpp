@@ -31,6 +31,10 @@ void ACardModel::Tick(float DeltaTime)
 	{
 		LerpToTargetLocation(12.0F);
 	}
+	if (CardState == EState::KeepFocus)
+	{
+		LerpToTargetLocation(12.0F);
+	}
 	if (CardState == EState::Follow)
 	{
 		UMiscFunctionLibrary::GetMouseProjectileLocationAtHeight(Cast<APlayerController>(EventListener -> Controller), 240.0F, TargetLocation);
@@ -83,6 +87,22 @@ void ACardModel::SetCardState(EState NewState)
 			if (CardStruct.CardZone == EZone::BoardZone)
 			{
 				AdditiveLocation = FVector(0.0F, 0.0f, 30.0F);
+			}
+			break;
+		}
+	case EState::KeepFocus :
+		{
+			if (CardStruct.CardZone == EZone::HandZone && CardStruct.PlayerIndex == EventListener -> Controller -> PlayerState -> GetPlayerId())
+			{
+				AdditiveLocation = FVector(0.0F, 50.0f, 0.0F);
+			}
+			if (CardStruct.CardZone == EZone::EchoZone && CardStruct.PlayerIndex == EventListener -> Controller -> PlayerState -> GetPlayerId())
+			{
+				AdditiveLocation = FVector(0.0F, 50.0f, 0.0F);
+			}
+			if (CardStruct.CardZone == EZone::BoardZone)
+			{
+				AdditiveLocation = FVector(0.0F, 0.0f, 0.0F);
 			}
 			break;
 		}
