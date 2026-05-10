@@ -12,17 +12,6 @@
   <component name="ChangeListManager">
     <list default="true" id="c74a718f-9b99-4263-9cf9-fd0684de377e" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.ENITAS/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.ENITAS/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Gameplay/BP_CardPlayer.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Gameplay/BP_CardPlayer.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/UMG/BP_MainUMG.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/UMG/BP_MainUMG.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/UMG/BP_PickUpSacrifice.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/UMG/BP_PickUpSacrifice.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ENITAS/CardCoreSystem/CardCoreDriver.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ENITAS/CardCoreSystem/CardCoreDriver.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ENITAS/CardCoreSystem/CardInstance.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ENITAS/CardCoreSystem/CardInstance.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ENITAS/CardCoreSystem/CardInstance.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ENITAS/CardCoreSystem/CardInstance.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ENITAS/CardCoreSystem/EffectInstance.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ENITAS/CardCoreSystem/EffectInstance.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ENITAS/CardCoreSystem/EffectInstance.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ENITAS/CardCoreSystem/EffectInstance.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ENITAS/Client/CardModel.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ENITAS/Client/CardModel.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ENITAS/Client/CardModel.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ENITAS/Client/CardModel.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ENITAS/GamePlay/CardPlayer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ENITAS/GamePlay/CardPlayer.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/ENITAS/Misc/RuleChecker.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ENITAS/Misc/RuleChecker.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/ENITAS/Misc/RuleChecker.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ENITAS/Misc/RuleChecker.h" afterDir="false" />
     </list>
@@ -525,6 +514,7 @@
       <workItem from="1778022657456" duration="4039000" />
       <workItem from="1778258562609" duration="5254000" />
       <workItem from="1778380722617" duration="2684000" />
+      <workItem from="1778423309233" duration="2610000" />
     </task>
     <servers />
   </component>
