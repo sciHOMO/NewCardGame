@@ -42,12 +42,17 @@ bool URuleChecker::CanAttackOrActivate_Client(const ACardCoreDriver* Driver, con
 
 bool URuleChecker::CanAttack_Client(const ACardCoreDriver* Driver, const int PlayerIndex, const FCardStruct& AttackerStruct, const FCardStruct& DefenderStruct)
 {
+	if (!Driver) return false;
+	if (Driver -> GamePhase != EPhase::Player_0_Turn && Driver -> GamePhase != EPhase::Player_1_Turn) return false;
 	if (Driver -> GamePhase == EPhase::Player_0_Turn && PlayerIndex) return false;
 	if (Driver -> GamePhase == EPhase::Player_1_Turn && !PlayerIndex) return false;
+	if (Driver -> TurnNum == 1) return false;
 	if (PlayerIndex != AttackerStruct.PlayerIndex) return false;
 	if (PlayerIndex == DefenderStruct.PlayerIndex) return false;
 	if (AttackerStruct.CardZone != EZone::BoardZone) return false;
 	if (DefenderStruct.CardZone != EZone::BoardZone) return false;
+	if (AttackerStruct.CardType != EType::Servant) return false;
+	if (DefenderStruct.CardType != EType::Servant) return false;
 	if (AttackerStruct.Tapped) return false;
 
 	return true;
@@ -198,6 +203,7 @@ bool URuleChecker::CanPlayCard_Server(const ACardCoreDriver* Driver, const int P
 bool URuleChecker::CanAttack_Server(const ACardCoreDriver* Driver, const int PlayerIndex, const FCardStruct& AttackerStruct, const FCardStruct& DefenderStruct)
 {
 	if (!Driver) return false;
+	if (Driver -> GamePhase != EPhase::Player_0_Turn && Driver -> GamePhase != EPhase::Player_1_Turn) return false;
 	if (Driver -> TurnNum == 1) return false;
 	if (Driver -> GamePhase == EPhase::Player_0_Turn && PlayerIndex) return false;
 	if (Driver -> GamePhase == EPhase::Player_1_Turn && !PlayerIndex) return false;
@@ -205,6 +211,8 @@ bool URuleChecker::CanAttack_Server(const ACardCoreDriver* Driver, const int Pla
 	if (PlayerIndex == DefenderStruct.PlayerIndex) return false;
 	if (AttackerStruct.CardZone != EZone::BoardZone) return false;
 	if (DefenderStruct.CardZone != EZone::BoardZone) return false;
+	if (AttackerStruct.CardType != EType::Servant) return false;
+	if (DefenderStruct.CardType != EType::Servant) return false;
 	if (AttackerStruct.Tapped) return false;
 
 	return true;

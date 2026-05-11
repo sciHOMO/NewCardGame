@@ -119,16 +119,16 @@ enum class EPackageType : uint8
 	PlaceHolder				UMETA(DisplayName = "PlayerHolder"),
 	GameStart					UMETA(DisplayName = "GameStart"),
 	GameEnd					UMETA(DisplayName = "GameEnd"),					//[0] 胜利玩家ID：IntValue
-	TurnStart						UMETA(DisplayName = "TurnStart"),						//[0] 回合玩家ID：IntValue
+	TurnStart					UMETA(DisplayName = "TurnStart"),						//[0] 回合玩家ID：IntValue
 	TurnEnd						UMETA(DisplayName = "TurnEnd"),						//[0] 回合玩家ID：IntValue
 	CardMove					UMETA(DisplayName = "CardMove"),					//[0] 卡牌结构体：CardOrPlayer [1] 位置：FromZoneValue [2] 移动原因：Reason
-	CardAttach					UMETA(DisplayName = "CardAttach"),					//[0] 卡牌结构体：CardOrPlayer [1] 卡牌结构体：CardOrPlayer 
+	CardAttach				UMETA(DisplayName = "CardAttach"),					//[0] 卡牌结构体：CardOrPlayer [1] 卡牌结构体：CardOrPlayer 
 	CardAttack					UMETA(DisplayName = "CardAttack"),					//[0] 卡牌结构体：CardOrPlayer [1] 卡牌结构体：CardOrPlayer 
-	CardApplyDamage		UMETA(DisplayName = "CardApplyDamage"),		//[0] 卡牌结构体：CardOrPlayer [1] 伤害数值：IntValue
+	CardApplyDamage	UMETA(DisplayName = "CardApplyDamage"),	//[0] 卡牌结构体：CardOrPlayer [1] 伤害数值：IntValue
 	CardApplyHeal			UMETA(DisplayName = "CardApplyHeal"),			//[0] 卡牌结构体：CardOrPlayer [1] 恢复数值：IntValue
 	CardActivate				UMETA(DisplayName = "CardActivate"),				//[0] 卡牌结构体：CardOrPlayer
-	CardUpdate					UMETA(DisplayName = "CardUpdate"),				//[0] 卡牌结构体：CardOrPlayer
-	CardApplyEffect			UMETA(DisplayName = "CardApplyEffect"),			//[0] 卡牌结构体：CardOrPlayer
+	CardUpdate				UMETA(DisplayName = "CardUpdate"),				//[0] 卡牌结构体：CardOrPlayer
+	CardApplyEffect		UMETA(DisplayName = "CardApplyEffect"),			//[0] 卡牌结构体：CardOrPlayer
 	CardReveal					UMETA(DisplayName = "CardReveal"),					//[0] 卡牌结构体：CardOrPlayer
 	TargetPickUp				UMETA(DisplayName = "TargetPickUp"),				//[0] 对象数组：IndexArray
 };

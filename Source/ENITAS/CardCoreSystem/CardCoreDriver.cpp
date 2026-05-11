@@ -463,15 +463,16 @@ void ACardCoreDriver::CardAttack(UCardInstance* SourceCardInstance, UCardInstanc
 	if (!SourceCardInstance || !TargetCardInstance) return;
 	const int ATK1 = SourceCardInstance -> CardStruct.Cur_AP;
 	const int ATK2 = TargetCardInstance -> CardStruct.Cur_AP;
-	CardApplyDamage(SourceCardInstance, TargetCardInstance, ATK1, EReason::PlaceHolder);
-	CardApplyDamage(TargetCardInstance,SourceCardInstance, ATK2, EReason::PlaceHolder);
-
+	
 	FEventPackageStruct Package;
 	Package.PackageType = EPackageType::CardAttack;
 	Package.Params.Add(FEventParamStruct::MakeCardOrPlayer(SourceCardInstance -> CardStruct));
 	Package.Params.Add(FEventParamStruct::MakeCardOrPlayer(SourceCardInstance -> CardStruct));
 	Package.GlobalEventIndex = GlobalEventIndex++;
 	DispatchEventPackageSync(Package);
+
+	CardApplyDamage(SourceCardInstance, TargetCardInstance, ATK1, EReason::PlaceHolder);
+	CardApplyDamage(TargetCardInstance,SourceCardInstance, ATK2, EReason::PlaceHolder);
 }
 
 void ACardCoreDriver::CardApplyDamage(UCardInstance* SourceCardInstance, UCardInstance* TargetCardInstance, int Damage, EReason Reason)

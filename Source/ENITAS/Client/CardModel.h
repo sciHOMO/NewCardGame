@@ -103,4 +103,10 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void EndDisappear();
+
+	UFUNCTION(BlueprintNativeEvent)
+	void StartAttack(const bool BeAttacked, const bool Owning,  const FEventPackageStruct& Package);
+
+	UFUNCTION(BlueprintCallable)
+	void EndAttack();
 };

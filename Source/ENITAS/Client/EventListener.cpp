@@ -44,17 +44,17 @@ void UEventListener::Execute(const FEventPackageStruct& Package)
 	switch (Package.PackageType)
 	{
 		case EPackageType::GameStart:					HandleGameStart(Package);					break;
-		case EPackageType::GameEnd:					HandleGameEnd(Package);					break;
+		case EPackageType::GameEnd:					HandleGameEnd(Package);						break;
 		case EPackageType::TurnStart:					HandleTurnStart(Package);						break;
 		case EPackageType::TurnEnd:						HandleTurnEnd(Package);						break;
 		case EPackageType::CardMove:					HandleCardMove(Package);					break;
-		case EPackageType::CardAttach:				HandleCardAttach(Package);					break;
+		case EPackageType::CardAttach:					HandleCardAttach(Package);					break;
 		case EPackageType::CardAttack:					HandleCardAttack(Package);					break;
 		case EPackageType::CardApplyDamage:	HandleCardApplyDamage(Package);		break;
 		case EPackageType::CardActivate:				HandleCardActivate(Package);				break;
-		case EPackageType::CardUpdate:				HandleCardUpdate(Package);				break;
+		case EPackageType::CardUpdate:				HandleCardUpdate(Package);					break;
 		case EPackageType::CardApplyEffect:		HandleCardApplyEffect(Package);			break;
-		case EPackageType::CardReveal:				HandleCardReveal(Package);					break;
+		case EPackageType::CardReveal:					HandleCardReveal(Package);					break;
 		
 		default : break;
 	}
@@ -143,7 +143,16 @@ void UEventListener::HandleCardAttach(const FEventPackageStruct& Package)
 
 void UEventListener::HandleCardAttack(const FEventPackageStruct& Package)
 {
+	ACardModel* AttackModel =FindCardModel(Package.Params[0].CardOrPlayer.CardIndex);
+	if (!AttackModel) return;
+	ACardModel* DefendModel =FindCardModel(Package.Params[1].CardOrPlayer.CardIndex);
+	if (!DefendModel) return;
+
+	const bool AttackOwning = Package.Params[0].CardOrPlayer.PlayerIndex == Controller -> PlayerState -> GetPlayerId();
+	const bool DefendOwning = Package.Params[1].CardOrPlayer.PlayerIndex == Controller -> PlayerState -> GetPlayerId();
 	
+	AttackModel -> StartAttack(true, AttackOwning, Package);
+	DefendModel -> StartAttack(false, DefendOwning, Package);
 }
 
 void UEventListener::HandleCardApplyDamage(const FEventPackageStruct& Package)

@@ -147,6 +147,7 @@ void ACardPlayer::SetInputMode(EInputMode NewMode)
 		}
 	case EInputMode::AttackOrActivate :
 		{
+			FocusActor = CheckHitResult();
 			break;
 		}
 	case EInputMode::Attack :
@@ -359,6 +360,7 @@ void ACardPlayer::LeftMouseButtonReleased()
 				FocusActor -> CardStruct, CheckHitResult() -> CardStruct))
 			{
 				SetInputMode(EInputMode::Attack);	//Activate在再次按下后处理
+				RequestAttack(FocusActor -> CardStruct.CardIndex, CheckHitResult() -> CardStruct.CardIndex);
 			}
 			break;
 		}

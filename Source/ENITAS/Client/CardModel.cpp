@@ -200,5 +200,26 @@ void ACardModel::EndDisappear()
 	EventListener -> Clear(PackageStruct.GlobalEventIndex);
 }
 
+void ACardModel::StartAttack_Implementation(const bool BeAttack, const bool Owning, const FEventPackageStruct& Package)
+{
+	PackageStruct = Package;
+	if (BeAttack)
+	{
+		CardStruct = Package.Params[0].CardOrPlayer;
+		EndAttack();	//攻击者立刻回调
+	}
+	else
+	{
+		CardStruct = Package.Params[1].CardOrPlayer;
+	}
+	SetCardState(EState::Anim);
+}
+
+void ACardModel::EndAttack()
+{
+	EventListener -> Clear(PackageStruct.GlobalEventIndex);
+}
+
+
 
 
