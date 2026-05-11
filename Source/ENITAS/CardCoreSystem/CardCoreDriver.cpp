@@ -467,7 +467,7 @@ void ACardCoreDriver::CardAttack(UCardInstance* SourceCardInstance, UCardInstanc
 	FEventPackageStruct Package;
 	Package.PackageType = EPackageType::CardAttack;
 	Package.Params.Add(FEventParamStruct::MakeCardOrPlayer(SourceCardInstance -> CardStruct));
-	Package.Params.Add(FEventParamStruct::MakeCardOrPlayer(SourceCardInstance -> CardStruct));
+	Package.Params.Add(FEventParamStruct::MakeCardOrPlayer(TargetCardInstance -> CardStruct));
 	Package.GlobalEventIndex = GlobalEventIndex++;
 	DispatchEventPackageSync(Package);
 

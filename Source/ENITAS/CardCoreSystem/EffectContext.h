@@ -15,16 +15,16 @@ UENUM(BlueprintType)
 enum class ECondition : uint8
 {
 	PlaceHolder					UMETA(DisplayName = "PlaceHolder"),
-	Activate					UMETA(DisplayName = "Activate"),
-	BattleCry					UMETA(DisplayName = "BattleCry"),
+	Activate							UMETA(DisplayName = "Activate"),
+	BattleCry						UMETA(DisplayName = "BattleCry"),
 	DeathRattle					UMETA(DisplayName = "DeathRattle"),
-	CastSpell					UMETA(DisplayName = "CastSpell"),
-	OnSummonServant				UMETA(DisplayName = "OnSummonServant"),
+	CastSpell						UMETA(DisplayName = "CastSpell"),
+	OnSummonServant		UMETA(DisplayName = "OnSummonServant"),
 	OnCastSpell					UMETA(DisplayName = "OnCastSpell"),
 	OnBuildTerrain				UMETA(DisplayName = "OnBuildTerrain"),
 	OnAttachEquip				UMETA(DisplayName = "OnAttachEquip"),
-	OnSacrificed				UMETA(DisplayName = "OnSacrificed"),
-	OnActivate					UMETA(DisplayName = "OnActivate"),
+	OnSacrificed					UMETA(DisplayName = "OnSacrificed"),
+	OnActivate						UMETA(DisplayName = "OnActivate"),
 	OnBattleCry					UMETA(DisplayName = "OnBattleCry"),
 	OnDeathRattle				UMETA(DisplayName = "OnDeathRattle"),
 

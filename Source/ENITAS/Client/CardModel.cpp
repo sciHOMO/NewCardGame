@@ -206,11 +206,11 @@ void ACardModel::StartAttack_Implementation(const bool BeAttack, const bool Owni
 	if (BeAttack)
 	{
 		CardStruct = Package.Params[0].CardOrPlayer;
-		EndAttack();	//攻击者立刻回调
+		EndAttack();	//攻击者立刻回调，注册0号卡牌
 	}
 	else
 	{
-		CardStruct = Package.Params[1].CardOrPlayer;
+		CardStruct = Package.Params[1].CardOrPlayer;	//防御者注册1号卡牌
 	}
 	SetCardState(EState::Anim);
 }

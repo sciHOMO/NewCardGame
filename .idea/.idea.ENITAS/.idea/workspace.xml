@@ -12,16 +12,8 @@
   <component name="ChangeListManager">
     <list default="true" id="c74a718f-9b99-4263-9cf9-fd0684de377e" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.ENITAS/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.ENITAS/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Gameplay/BP_CardModel.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Gameplay/BP_CardModel.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Gameplay/BP_CardPlayer.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Gameplay/BP_CardPlayer.uasset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/ENITAS/CardCoreSystem/CardCoreDriver.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ENITAS/CardCoreSystem/CardCoreDriver.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ENITAS/CardCoreSystem/EventPackage.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ENITAS/CardCoreSystem/EventPackage.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/ENITAS/Client/CardModel.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ENITAS/Client/CardModel.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ENITAS/Client/CardModel.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ENITAS/Client/CardModel.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ENITAS/Client/EventListener.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ENITAS/Client/EventListener.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ENITAS/GamePlay/CardPlayer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ENITAS/GamePlay/CardPlayer.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ENITAS/Misc/RuleChecker.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ENITAS/Misc/RuleChecker.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/卡牌CCG企划立项书.docx" beforeDir="false" afterPath="$PROJECT_DIR$/卡牌CCG企划立项书.docx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -491,7 +483,8 @@
       <workItem from="1778380722617" duration="2684000" />
       <workItem from="1778423309233" duration="2929000" />
       <workItem from="1778427108659" duration="161000" />
-      <workItem from="1778427600426" duration="4109000" />
+      <workItem from="1778427600426" duration="4204000" />
+      <workItem from="1778511078726" duration="476000" />
     </task>
     <servers />
   </component>
