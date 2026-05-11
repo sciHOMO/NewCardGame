@@ -206,7 +206,6 @@ void ACardModel::StartAttack_Implementation(const bool BeAttack, const bool Owni
 	if (BeAttack)
 	{
 		CardStruct = Package.Params[0].CardOrPlayer;
-		EndAttack();	//攻击者立刻回调，注册0号卡牌
 	}
 	else
 	{
@@ -217,6 +216,12 @@ void ACardModel::StartAttack_Implementation(const bool BeAttack, const bool Owni
 
 void ACardModel::EndAttack()
 {
+	SetCardState(EState::Lerp);
+}
+
+void ACardModel::EndAttackAndClear()
+{
+	SetCardState(EState::Lerp);
 	EventListener -> Clear(PackageStruct.GlobalEventIndex);
 }
 

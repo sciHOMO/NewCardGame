@@ -359,8 +359,8 @@ void ACardPlayer::LeftMouseButtonReleased()
 			if (CheckHitResult() && URuleChecker::CanAttack_Client(Cast<ACardCoreDriver>(GetWorld() -> GetGameState()), PlayerState -> GetPlayerId(),
 				FocusActor -> CardStruct, CheckHitResult() -> CardStruct))
 			{
-				SetInputMode(EInputMode::Attack);	//Activate在再次按下后处理
 				RequestAttack(FocusActor -> CardStruct.CardIndex, CheckHitResult() -> CardStruct.CardIndex);
+				SetInputMode(EInputMode::Idle);	//Activate在再次按下后处理
 			}
 			break;
 		}

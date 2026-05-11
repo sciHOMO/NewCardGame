@@ -143,14 +143,14 @@ void UEventListener::HandleCardAttach(const FEventPackageStruct& Package)
 
 void UEventListener::HandleCardAttack(const FEventPackageStruct& Package)
 {
-	ACardModel* AttackModel =FindCardModel(Package.Params[0].CardOrPlayer.CardIndex);
+	ACardModel* AttackModel = FindCardModel(Package.Params[0].CardOrPlayer.CardIndex);
 	if (!AttackModel) return;
-	ACardModel* DefendModel =FindCardModel(Package.Params[1].CardOrPlayer.CardIndex);
+	ACardModel* DefendModel = FindCardModel(Package.Params[1].CardOrPlayer.CardIndex);
 	if (!DefendModel) return;
 
 	const bool AttackOwning = Package.Params[0].CardOrPlayer.PlayerIndex == Controller -> PlayerState -> GetPlayerId();
 	const bool DefendOwning = Package.Params[1].CardOrPlayer.PlayerIndex == Controller -> PlayerState -> GetPlayerId();
-	
+
 	AttackModel -> StartAttack(true, AttackOwning, Package);
 	DefendModel -> StartAttack(false, DefendOwning, Package);
 }

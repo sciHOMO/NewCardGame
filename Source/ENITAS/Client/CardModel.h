@@ -109,4 +109,7 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void EndAttack();
+
+	UFUNCTION(BlueprintCallable)
+	void EndAttackAndClear();
 };
